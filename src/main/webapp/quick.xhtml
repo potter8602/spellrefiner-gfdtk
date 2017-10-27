@@ -1,0 +1,531 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    
+
+    <h:head>
+        <title>Spell Refiner</title>
+    </h:head>
+    
+    <h:outputScript library="js" name="general.js"></h:outputScript>    
+
+    <h:outputStylesheet library="css" name="index.css"/>
+     
+    <h:body onload="onload_quick()">
+    
+ 		<p:spacer width="20"/>
+    	
+    	<h:form id="form_general">
+    		<p:commandButton value="На главную страницу" styleClass="navigation_button" action="index.xhtml"/>
+    		<p:spacer width="10"/>
+    		<p:commandButton value="Назад" styleClass="navigation_button"  rendered="#{currentUser.authorized and (form_quick.state=='new_check' or form_quick.state=='old_check' or form_quick.state=='input')}" action="#{form_quick.setState('none')}" update="@all"/>
+    	</h:form>	
+    
+            		
+    	
+    	
+        <h:form id="form_login" rendered="#{!currentUser.authorized and form_quick.state=='none'}">
+        	<p:spacer width="20"/>
+                 
+            <p:defaultCommand target="command_login" />
+                   
+            <p:message for="form_login" showSummary="true" severity="error,warn"/>
+            
+            <p:spacer width="5"/>     
+            
+            <p:panelGrid rendered="#{!form_login.closed}">   
+            	<p:row>     
+                	<p:column>Логин</p:column>                                
+                	<p:column><p:inputText value="#{form_login.user.userLogin}" label="Логин" tabindex="1"/></p:column>
+                	
+                	<p:column rowspan="2">
+                		<p:commandButton id="command_login" value="Войти" styleClass="action_button" action="#{form_quick.ActionLogin('form_login')}" ajax="false" tabindex="3"/>
+                	</p:column>
+                	
+                </p:row>			
+                
+                <p:row>
+                	<p:column>Пароль</p:column>                                
+                	<p:column><p:password value="#{form_login.user.userPassword}" label="Пароль" tabindex="2"/></p:column>
+                </p:row>
+
+                <p:row>
+                	<p:column colspan="3"><p:commandLink value="Зарегистрироваться" action="#{form_quick.setState('registration')}" update="@all" /></p:column>
+                </p:row>     
+                
+            </p:panelGrid>
+        </h:form>
+        
+        
+            
+    		    	
+        <h:form id="form_registration" rendered="#{!currentUser.authorized and form_quick.state=='registration'}">
+        	<p:spacer width="20"/>
+        	            
+            <p:message for="form_registration" showSummary="true" severity="error,warn"/>            
+            
+            <p:panelGrid columns="2" rendered="#{!form_Registration.closed}">        
+                
+                <h:outputText value="Логин*"/>                                
+                <p:inputText id="login" value="#{form_Registration.user.userLogin}" label="Логин" />
+
+                <h:outputText value="Имя*"/>                                
+                <p:inputText id="name" value="#{form_Registration.user.userName}"  label="Имя"/>
+                
+                
+                <h:outputText value="E-mail"/>                                
+                <p:inputText id="email" value="#{form_Registration.user.userEmail}"  label="E-mail"/>
+                
+                
+                <h:outputText value="Пароль*"/>                                
+                <p:password id="password" value="#{form_Registration.user.userPassword}" label="Пароль"  redisplay="true"/>
+
+                <h:outputText value="Подтверждение пароля*"/>                                
+                <p:password id="confirm_password"  value="#{form_Registration.user.userConfirmPassword}" label="Подтверждение пароля" redisplay="true"/>
+
+                <h:outputText value=""/>                                
+                <p:commandButton value="Зарегистрироваться" styleClass="action_button" action="#{form_quick.ActionRegistration('form_registration')}" update="@all"/>              
+                
+            </p:panelGrid>    
+            
+        </h:form>           
+    		    	
+    
+    
+        <h:form id="form_new_old_check" rendered="#{currentUser.authorized and form_quick.state=='none'}">         
+            <p:spacer width="20"/>
+            
+            <p/>
+            <p:commandButton value="Новая проверка" styleClass="action_button" action="#{form_quick.ActionNewCheck()}" update="@all" />
+            <p/>
+            <p:commandButton value="Продолжить незавершенную проверку" styleClass="action_button" disabled="#{!form_quick.myChecksExtists}" action="#{form_quick.ActionOldCheck()}" update="@all" />
+            
+        </h:form>
+        
+
+        <h:form id="form_check" rendered="#{currentUser.authorized and form_quick.state=='new_check'}">
+        
+            <p:blockUI block="form_check" animate="true" trigger="button_start_new_check" >
+            	Подождите...
+            </p:blockUI>  
+                  
+            <p:spacer width="20"/>
+            
+            <p:message for="form_check" showSummary="true"/>
+            
+            <p/>
+            
+            <p:panelGrid>
+            	<p:row>
+            		<p:column styleClass="attention_text">
+	            		<h:outputText value="Выберите словарь:"  styleClass="ui-widget" rendered="#{form_check.check!=null and form_check.check.getCheckID()==null}"/>
+            		</p:column>
+            	</p:row>
+            </p:panelGrid>
+                        
+            <p/>
+
+            <p:dataTable value="#{form_check.list_Dictionary}" var="item" emptyMessage="Нет доступных словарей" paginator="true" selectionMode="single" selection="#{form_check.selectedDictionary}" rowKey="#{item.dictID}" rendered="#{form_check.check != null and form_check.check.getCheckID()==null}" paginatorPosition="bottom" rows="10">                        
+                                
+                <p:column headerText="Название"  styleClass="dictName_column">
+                	<h:outputText value="#{item.dictName}"/>
+                </p:column>
+                
+                <p:column headerText="Кол-во слов" styleClass="dict_numberOfWords_column">
+                	<h:outputText value="#{item.numberOfWords}"/>
+                </p:column>
+                
+                <p:column  styleClass="dictDescription_column">
+                	<p:rowToggler  rendered="#{not empty item.dictDescription}"/> 
+                </p:column>
+
+                <p:column headerText="Создан" styleClass="dictDateTime_column">
+                    <h:outputText value="#{item.dictDateTime}">
+                        <f:convertDateTime type="both" pattern="dd.MM.yyyy HH:mm:s" />                        
+                    </h:outputText>
+                </p:column>
+                
+                <p:column headerText="Пользователь" styleClass="dictUser_column">
+                	<h:outputText value="#{item.dictUser.userName}"/>
+                </p:column>              
+                
+                                
+                
+                <p:rowExpansion>
+                	<h:outputText value="Описание: "/>
+                	<h:outputText value="#{item.dictDescription}"/>
+                </p:rowExpansion>                    
+                
+            </p:dataTable>    
+            
+            <p:commandButton value="Начать проверку" id="button_start_new_check" styleClass="action_button" action="#{form_quick.ActionStartNewCheck('form_check')}"  update="@all" />
+            
+        </h:form>  
+        
+        <h:form id="form_my_checks" rendered="#{currentUser.authorized and form_quick.state=='old_check'}">
+        
+        	<p:spacer width="20"/>
+        	             
+            <p:message for="form_my_checks" showSummary="true"/>
+            
+            
+            <p:panelGrid>
+            	<p:row>
+            		<p:column styleClass="attention_text">
+            			<h:outputText value="Выберите проверку:"  styleClass="ui-widget"/>
+            		</p:column>
+            	</p:row>
+            </p:panelGrid>
+            
+            <p:spacer width="2"/>
+            
+            <p:dataTable id="list_my_checks" value="#{form_my_checks.list_Check}" var="item" emptyMessage="Нет проверок"  paginator="true" paginatorPosition="bottom" rows="12">                        
+                
+                <p:column headerText="Название"  styleClass="checkName_column">
+                    <h:outputText value="#{item.checkName}" label="Название"/>
+                </p:column>                
+                
+                <p:column headerText="Создана" styleClass="checkDateTime_column">
+                    <h:outputText value="#{item.checkDateTime}">
+                        <f:convertDateTime type="both" pattern="dd.MM.yyyy HH:mm:s" />                        
+                    </h:outputText>                    
+                </p:column>                
+                
+                <p:column headerText="Словарь" styleClass="checkDict_dictName_column">
+                	<h:outputText value="#{item.checkDict.dictName}"/>
+                </p:column>
+                
+                <p:column styleClass="check_action_begin_column">
+                    <p:commandLink value="Начать проверку" actionListener="#{form_quick.ActionStartNewPass(item)}" update="@all" rendered="#{item.checkPass==0 and !item.checkFinished}"/>
+                    <p:commandLink value="Продолжить проверку" actionListener="#{form_quick.ActionContinueCheck(item)}" update="@all" rendered="#{item.checkPass!=0 and !item.checkFinished}"/>
+                    
+                    
+                    <h:outputText value="Завершена"  rendered="#{item.checkFinished}"/>
+                </p:column>                       
+                                
+                <p:column headerText="Проход" styleClass="checkPass_column">
+                	<h:outputText value="#{item.checkPass}" rendered="#{item.checkPass!=0}"/>
+                </p:column>                
+
+                <p:column headerText="Кол-во слов" styleClass="check_numberOfCheckedWords_column">
+                	<h:outputText value="#{item.numberOfCheckedWords}" rendered="#{item.checkPass!=0}"/>
+                </p:column>
+                
+                
+            </p:dataTable>    
+        
+        </h:form> 
+        
+        
+        <h:form id="form_messages" >            
+            <p:messages globalOnly="true"/>            
+        </h:form>        
+        
+        
+        <h:form id="form_input_check" rendered="#{currentUser.authorized and accessControl.writeAccess_Check and form_quick.state=='input'}">
+        
+        	<p:spacer width="10"/>
+        	<p:separator />            
+            
+            <p:message for="form_input_check"  showSummary="true"/>
+            
+            <p:panelGrid>        
+                    <p:row>
+                        <p:column>Проверка</p:column>
+                        <p:column>Название словаря</p:column>
+                        <p:column rendered="#{form_input.check.checkPass==0}">Количество слов в словаре</p:column>
+                        <p:column rendered="#{form_input.check.checkPass ge 1}">Проход</p:column>
+                        
+                        <p:column rowspan="2" rendered="#{form_input.check.checkPass==0}">
+                            <p:commandLink value="Начать первый проход" actionListener="#{form_input.StartNewPass}" update="@all" process="@form" disabled="#{form_input.GetNumberOfDictionaryWords()==0}">
+                            </p:commandLink>  
+                            
+                            
+                        </p:column>
+
+                        <p:column rowspan="2" rendered="#{form_input.check.checkFinished}">
+                        	Проверка завершена
+                        </p:column>
+                        
+                    </p:row>
+                    
+                    <p:row>                        
+                        <p:column><h:outputText value="#{form_input.check.checkName}"/></p:column>
+                        <p:column><h:outputText value="#{form_input.check.checkDict.dictName}"/></p:column>
+                        <p:column rendered="#{form_input.check.checkPass==0}"><h:outputText value="#{form_input.GetNumberOfDictionaryWords()}"/></p:column>
+                        <p:column  rendered="#{form_input.check.checkPass ge 1}"><h:outputText value="#{form_input.check.checkPass}"/></p:column>
+                    </p:row>
+            </p:panelGrid>      
+        </h:form>                
+        
+
+
+
+
+        <h:form id="form_input" rendered="#{form_input.check.checkPass ge 1 and !form_input.check.checkFinished and currentUser.authorized and accessControl.writeAccess_Check and form_quick.state=='input'}">        
+            
+                
+        	<p:remoteCommand name="form_input_save" actionListener="#{form_input.Save}" update="@form form_messages form_input_check" />
+        	
+        	<p:remoteCommand name="form_input_goto_next_word" actionListener="#{form_input.GotoNextWord}" update="@form form_messages form_input_check form_input"  rendered="#{!(form_input.word==null or form_input.input.inputID==null or form_input.numberOfWordsForInput==form_input.numberOfInputWordsInCurrentPass)}"/>
+        	<p:remoteCommand name="form_input_goto_next_word" update="@form form_messages form_input_check form_input"  rendered="#{(form_input.word==null or form_input.input.inputID==null or form_input.numberOfWordsForInput==form_input.numberOfInputWordsInCurrentPass)}"/>        	
+        	
+        	<p:remoteCommand name="form_input_play" onstart="javascript:audio_general_play('${form_input.word.wordID}');" update="@form form_messages form_input_check form_input"/>
+        	
+        	<p:remoteCommand name="form_input_set_focus" onstart="javascript:set_focus('form_input:wordInput');"/>
+        	
+        	<p:remoteCommand name="form_input_set_uncertain" actionListener="#{form_input.SetUncertain}" update="@form" />
+        	
+        	
+	        <p:spacer width="10"/>
+    	    <p:separator rendered="false"/>
+           
+            <p:message for="form_input" showSummary="true"/>
+
+            <p:separator />
+        
+            <p:panelGrid>      
+            
+                    <p:row>
+                        <p:column>Слов для ввода: <h:outputText value="#{form_input.numberOfWordsForInput}"/></p:column>
+                        <p:column>Введено слов: <h:outputText value="#{form_input.numberOfInputWordsInCurrentPass}"/></p:column>                        
+                    
+                    </p:row>
+            
+            		<p:row>
+            			<p:column colspan="7">
+            				<p:spacer width="5"/>
+            			</p:column>
+            		</p:row>
+              
+                    <p:row>
+                    	<p:column rendered="#{form_input.training}">Слово</p:column>
+                        <p:column>Перевод</p:column>
+                        <p:column>Описание</p:column>
+                    
+                        <p:column styleClass="attention_text">
+                        	Введите слово                      	       
+                        	                 	
+                        </p:column>
+                        
+                        <p:column>Не уверен</p:column>
+                        
+                        <p:column rowspan="2">
+                            <p:commandLink value="Сохранить" action="#{form_input.Save}" update="@form form_messages form_input_check" process="@form"  disabled="#{form_input.word==null}" title="ALT+L"/>
+                        </p:column>
+
+                        <p:column rowspan="2">
+                            <p:commandLink value="Следующее слово" actionListener="#{form_input.GotoNextWord}" update="@form form_messages form_input_check form_input" process="@form" disabled="#{form_input.word==null or form_input.input.inputID==null or form_input.numberOfWordsForInput==form_input.numberOfInputWordsInCurrentPass}" title="ALT+M, ALT+'">
+                            </p:commandLink>    
+                        </p:column>
+
+                        
+                    </p:row>
+                    
+                    <p:row>
+                    
+                        <p:column rendered="#{form_input.training}">                        	
+                        	<h:outputText value="#{form_input.word.wordSpelling}"/>
+                        </p:column>
+                    
+                        <p:column><h:outputText value="#{form_input.word.wordTranslation}"/></p:column>
+                        <p:column><h:outputText value="#{form_input.word.wordDescription}" /></p:column>
+                        
+                        
+                    
+                        <p:column><p:inputText id="wordInput" value="#{form_input.input.wordInput}" disabled="#{form_input.word==null}"  title="ALT+K"/></p:column>
+                        <p:column>
+                        	<p:selectBooleanCheckbox id="form_input_uncertain" value="#{form_input.input.uncertain}" disabled="#{form_input.word==null}">
+                        	</p:selectBooleanCheckbox>
+                        	                        	
+                        	<p:tooltip for="form_input_uncertain" value="ALT+U" trackMouse="true" />                   
+                        
+                        </p:column>
+                        
+                        
+                    </p:row>
+                    
+                    <p:row>                        
+                        <p:column>
+                        	<p:commandLink value="Пропустить слово" actionListener="#{form_input.SkipWord}" update="@form form_messages form_input_check" process="@form" disabled="#{form_input.word==null}" rendered="#{!form_input.input.skipped}">
+                        	</p:commandLink>
+                        	
+                        	<p:commandLink value="Отменить пропуск слова" actionListener="#{form_input.UnSkipWord}" update="@form form_messages form_input_check" process="@form" disabled="#{form_input.word==null}" rendered="#{form_input.input.skipped}">
+                        	</p:commandLink>
+                        	
+                        </p:column>
+                        
+                        <p:column colspan="1">
+                        	<p:commandLink value="Назад" actionListener="#{form_input.GotoPreviousInput}" update="@form form_messages form_input_check" process="@form" disabled="#{form_input.noPreviousInput}">
+                        	</p:commandLink>
+                        	
+                        	<p:spacer width="15"/>
+                        	
+                        	<p:commandLink value="Вперед" actionListener="#{form_input.GotoNextInput}" update="@form form_messages form_input_check" process="@form"  disabled="#{form_input.noNextInput}">
+                        	</p:commandLink>
+                        	
+                        </p:column>
+                        
+
+                        <p:column colspan="1">
+                        	<p:commandLink value="Подсмотреть слово" update="@none" process="@none" onclick="form_input_show_hidden_word_spelling()" title="ALT+I">
+                        	</p:commandLink>
+                        </p:column>
+                        
+                        <p:column colspan="4">
+                        	<p:inputText style="display:none" class="hidden_word_spelling" value="#{form_input.word.wordSpelling}" readonly="true" rendered="#{form_input.word.wordID!=null}"/>
+                        	
+                        </p:column>
+                        
+                    </p:row>
+                    
+                    
+            		<p:row>
+            			<p:column colspan="7">
+            				<p:spacer width="5"/>
+            			</p:column>
+            		</p:row>
+
+                    <p:row>
+                        <p:column rendered="#{form_input.input.inputID==null}">
+                        	<p:spacer width="5"/>
+                        </p:column>     
+
+                        <p:column style="background-color: PaleGreen;" rendered="#{form_input.input.inputID!=null and !form_input.input.error}">
+                        	<h:outputText value="Правильно" rendered="#{form_input.input.inputID!=null and !form_input.input.error}"/>
+                        </p:column>     
+
+                        <p:column style="background-color: LightCoral;" rendered="#{form_input.input.inputID!=null and form_input.input.error}">
+                        	<h:outputText value="Ошибка" rendered="#{form_input.input.inputID!=null and form_input.input.error}"/>
+                        </p:column>     
+
+                        <p:column>
+                        	<h:outputText value="Слово в словаре" rendered="#{form_input.input.inputID!=null}"/>
+                        </p:column>
+                        
+                        <p:column>
+                        	<h:outputText value="#{form_input.word.wordSpelling}" rendered="#{form_input.input.inputID!=null}"/>
+                        </p:column>
+                                                                   
+                    </p:row>
+                    
+            		<p:row>
+            			<p:column colspan="7">
+            				<p:spacer width="5"/>
+            			</p:column>
+            		</p:row>
+                    
+                    
+                    <p:row>
+                        <p:column colspan="7">
+                        	<p:commandButton value="Завершить первый проход" styleClass="action_button" action="#{form_input.StartNewPass}" update="@all" process="@form" rendered="#{form_input.check.checkPass==1 and form_input.numberOfWordsForInput!=0 and form_input.numberOfRemainingWordsInCurrentPass!=0}" disabled="#{form_input.numberOfInputWordsInCurrentPass==0}"/>
+                            <p:commandButton value="Начать следующий проход" styleClass="action_button" action="#{form_input.StartNewPass}" update="@all" process="@form" rendered="#{form_input.check.checkPass gt 1 and form_input.numberOfWordsForInput!=0 and form_input.numberOfRemainingWordsInCurrentPass!=0}" disabled="#{form_input.numberOfWordsForInput!=form_input.numberOfInputWordsInCurrentPass}"/>
+                            <p:commandButton value="Завершить проверку" styleClass="action_button" action="#{form_input.FinishCheck}" update="@all" process="@form" rendered="#{form_input.check.checkPass ge 1 and (form_input.numberOfWordsForInput==0 or form_input.numberOfRemainingWordsInCurrentPass==0)}"/>
+                        </p:column>
+                        
+                    </p:row>
+                    
+            </p:panelGrid>    
+            
+            
+        </h:form>         
+        
+		<p:spacer width="10"/>
+
+		<p:panel collapsed="false" toggleable="true" header="Описание страницы" rendered="#{form_quick.state=='input'}">
+			
+				<br/>Горячие клавиши:
+				<br/>ALT+J - Проиграть слово
+				<br/>ALT+K - Поместить курсор в поле ввода слова
+				<br/>ALT+L - Сохранить
+				<br/>ALT+; (для Firefox) или ALT+M (для Chrome)- Следующее слово
+				<br/>ALT+U - Установить флаг "Не уверен"
+				<br/>ALT+I - Подсмотреть слово
+				<br/>
+				<br/>				
+				<br/>В проверке вводим слова из словаря (слова из завершенных проверок не предлагаются).
+				<br/>Введенное слово проверяется на ошибки. Если не уверены в правильном написании слова, то устанавливаем флаг "Не уверен".  
+				<br/>Эти слова и слова с ошибками перейдут в следующий проход проверки. Их нужно будет ввести повторно.
+				<br/>Во втором и следующих проходах нужно будет вводить только слова из первого прохода.
+				<br/>
+				<br/>В первом проходе можно ввести все слова из словаря, но лучше ввести немного (не больше 100) и завершить проход. 
+				<br/>Остальные слова из словаря можно будет ввести в новой проверке.
+				<br/> 
+				<br/>Кнопкой «Пропустить слово» слово будет пропущено и больше не будет предлагаться к проверке. 
+				<br/>Что бы отменить это действие, нужно вернуться назад к пропущенному слову кнопкой «Назад» и нажать на кнопку «Отменить пропуск слова».
+				<br/>
+				<br/>Кнопками «Назад» и «Вперед» можно перемещаться по введенным словам (если нужно изменить установку флага «Не уверен» или изменить введенное слово – например в случае опечатки).
+				<br/>Кнопкой «Подсмотреть» показывается написание слова.
+				<br/>
+				<br/>При вводе всех слов прохода станет доступно действие «Начать следующий проход».
+				<br/>Когда все слова из первого прохода будут введены без ошибок, то будет предложено завершить проверку.
+				<br/>
+				<br/>Что бы узнать о других возможностях программы читайте общее описание на главной странице.
+		</p:panel>
+
+
+		<p:spacer width="20"/>
+		
+       <h:form id="form_test" rendered="false">
+        	form_quick.state==
+        	<h:outputText value="#{form_quick.state}"/>
+        	
+        	<p:spacer width="10"/>
+        	
+        	form_quick.myChecksExtists==
+        	<h:outputText value="#{form_quick.myChecksExtists}"/>
+        	
+        	
+			<p/>
+            form_check.check
+            <h:outputText value="#{form_check.check}"/>
+            
+            <p/>
+            form_check.check.checkName
+            <h:outputText value="#{form_check.check.checkName}"/>
+            
+            <p/>
+            form_check.check.checkID
+            <h:outputText value="#{form_check.check.checkID}"/>
+            
+			<p/>
+            form_input.check
+            <h:outputText value="#{form_input.check}"/>
+            
+			<p/>
+            form_input.check.checkID
+            <h:outputText value="#{form_input.check.checkID}"/>
+
+			<p/>
+            form_input.check.checkPass
+            <h:outputText value="#{form_input.check.checkPass}"/>
+            
+            <p/>
+            currentUser.authorized
+            <h:outputText value="#{currentUser.authorized}"/>
+             
+            <p/>
+            accessControl.writeAccess_Check
+            <h:outputText value="#{accessControl.writeAccess_Check}"/>
+            
+            <p/>
+        	form_input.NumberOfRemainingWordsInCurrentPass
+        	<h:outputText value="#{form_input.numberOfRemainingWordsInCurrentPass}"/>
+
+			<p/>
+        	form_input.NumberOfPassedWordInCurrentPass
+        	<h:outputText value="#{form_input.numberOfPassedWordInCurrentPass}"/>
+            
+        	
+        </h:form>
+    
+		  
+    </h:body>
+    
+    
+</html>
+

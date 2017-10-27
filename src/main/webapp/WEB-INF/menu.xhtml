@@ -1,0 +1,72 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+    
+    <h:form>   
+        
+        <p:menubar>        
+            <p:menuitem value="На главную страницу" url="index.xhtml" ajax="false"/>            
+            <p:menuitem value="Словари" outcome="dictionaries.xhtml" ajax="false"  rendered="#{currentUser.authorized}"/>
+            
+            <p:menuitem value="Проверки" outcome="checks.xhtml" ajax="false"  rendered="#{currentUser.authorized}"/>
+
+            <p:menuitem value="Зарегистрироваться" outcome="registration.xhtml" ajax="false"/>
+            <p:menuitem value="Войти" outcome="login.xhtml" ajax="false"  rendered="#{!currentUser.authorized}"/>
+            <p:menuitem value="Сменить пароль" outcome="change_password.xhtml" ajax="false"  rendered="#{currentUser.authorized}"/>
+            <p:menuitem value="Изменить реквизиты" outcome="change_user.xhtml" ajax="false"  rendered="#{currentUser.authorized}"/>
+            <p:menuitem value="Выйти" action="#{currentUser.LogOut}" ajax="false"  rendered="#{currentUser.authorized}" />
+            
+            <p:menuitem value="Тест вкл." action="#{currentUser.setTesting(true)}" ajax="false"  rendered="#{!currentUser.testing and currentUser.user.userAdmin}" />
+            <p:menuitem value="Тест выкл." action="#{currentUser.setTesting(false)}" ajax="false"  rendered="#{currentUser.testing and currentUser.user.userAdmin}" />
+            
+            
+            <f:facet name="options">                
+                <h:outputText value=" Логин: " rendered="#{currentUser.authorized}" />
+                <h:outputText value="#{currentUser.user.userLogin}" rendered="#{currentUser.authorized}" />                      
+                <h:outputText value=" Имя: " rendered="#{currentUser.authorized}" />
+                <h:outputText value="#{currentUser.user.userName}" rendered="#{currentUser.authorized}" />
+                
+                <h:outputText value=" Тестирование" rendered="#{currentUser.testing}" />
+                <h:outputText value=" Администратор" rendered="#{currentUser.user.userAdmin}"/>
+            </f:facet>            
+            
+        </p:menubar>        
+         
+
+        <p:menubar rendered="#{currentUser.testing}">        
+            <p:menuitem value="Словарь 1" outcome="dictionary.xhtml" ajax="false">
+                <f:param name="dictID" value="1" />
+            </p:menuitem>
+            
+            <p:menuitem value="Проверка 1" outcome="check.xhtml" ajax="false">
+                <f:param name="checkID" value="1" />
+            </p:menuitem>
+
+            <p:menuitem value="Словарь 1 из текста" outcome="dictionary_from_text.xhtml" ajax="false">
+                <f:param name="dictID" value="1" />
+            </p:menuitem>
+
+            <p:menuitem value="Словарь 1 озвучить" outcome="dictionary_recordsound.xhtml" ajax="false">
+                <f:param name="dictID" value="1" />
+            </p:menuitem>
+            
+            <p:submenu label="Таблицы">
+                <p:menuitem value="users" outcome="table_users.xhtml" ajax="false"/>
+                <p:menuitem value="dictionaries" outcome="table_dictionaries.xhtml" ajax="false"/>
+                <p:menuitem value="words" outcome="table_words.xhtml" ajax="false"/>
+                <p:menuitem value="dictionarypermissions" url="table_dictionarypermissions.xhtml" ajax="false"/>
+                <p:menuitem value="checks" outcome="table_checks.xhtml" ajax="false"/>
+                <p:menuitem value="inputs" outcome="table_inputs.xhtml" ajax="false"/>
+                <p:menuitem value="dictionaryerrors" outcome="table_dictionaryerrors.xhtml" ajax="false"/>
+                <p:menuitem value="test" outcome="test.xhtml" ajax="false"/>
+            </p:submenu>   
+            
+            
+        </p:menubar>        
+        
+    </h:form>          
+    
+</ui:composition>

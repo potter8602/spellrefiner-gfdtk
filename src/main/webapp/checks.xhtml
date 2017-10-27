@@ -1,0 +1,209 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <title>Проверки</title>
+    </h:head>
+    
+    
+   <h:outputStylesheet library="css" name="index.css"/>
+    
+   
+    <h:body>        
+        
+        <ui:include src="/WEB-INF/menu.xhtml" />
+
+		<p:spacer width="10"/>
+		
+		<p:panel collapsed="true" toggleable="true" header="Описание страницы">
+			
+			<p>			
+				На данной странице можно создавать новые проверки и просматривать списки существующих проверок созданных Вами.
+				<br/>Для создания проверки следует нажать кнопку «Добавить новую проверку» (при этом откроется список доступных словарей), ввести имя проверки, выбрать словарь и сохранить проверку кнопкой «Сохранить».
+				<br/>В списке словарей, в колонке после названия словаря находится стрелка, при нажатии на которую открывается описание словаря.
+				<br/>Кнопкой «Начать проверку» можно перейти к вводу первого прохода проверки.
+				<br/>
+				<br/>Ниже на странице располагается список Ваших проверок. Вверху списка находятся последние созданные проверки.
+				<br/>По умолчанию показываются только незавершенные проверки. Для просмотра всех проверок нужно снять флаг "Только незавершенные".
+				<br/>
+				<br/>В поле «Наименование» можно отредактировать название проверки и записать изменения кнопкой «Сохранить».
+				<br/>Кнопка «Начать проверку» доступна у новых проверок. При нажатии на кнопку можно перейти на форму ввода проверки.
+				<br/>Кнопка «Продолжить проверку» доступна у начатых проверок. При нажатии на кнопку можно перейти на форму ввода проверки.
+				<br/>Пометка проверки «Завершена»  означает завершенную проверку.
+				<br/>
+				<br/>Кнопкой «Удалить (из списка)» можно пометить проверку как удаленную (эта проверка не будет учитываться как сделанная).
+				<br/>				
+				<br/>При отметке флага «Показать удаленные» в списке будут показаны удаленные проверки. Действием «Отменить удаление» проверка становится видимой в списке.
+			</p>
+			
+		</p:panel>
+
+        <p:separator />
+
+        
+        <h:form id="form_check" rendered="#{currentUser.authorized}">            
+            <!--  <p:messages />-->
+            <p:message for="form_check" showSummary="true"/>
+            
+            <p:panelGrid>                                                              
+                
+                    <p:row>
+                        <p:column rowspan="2">
+                            <p:commandLink value="Добавить новую проверку" action="#{form_check.NewCheck}" update="@form" process="@form" disabled="#{form_check.check!=null and form_check.check.getCheckID() == null}"/>
+                        </p:column>
+                        <p:column>Название</p:column>
+                        
+                        <p:column rowspan="2">
+                            <p:commandLink value="Сохранить" action="#{form_check.ActionSave('form_check')}" update="@form form_my_checks" process="@form"  disabled="#{form_check.check==null}" oncomplete="#{form_my_checks.UpdateList()}">
+                            	                            	
+                            </p:commandLink>
+                        </p:column>
+
+                        <p:column rowspan="2">
+                            <p:link value="Начать проверку" outcome="check"  disabled="#{form_check.check.checkPass!=0 or form_check.check.checkID==null}">
+                                <f:param name="checkID" value="#{form_check.check.checkID}" />
+                            </p:link>
+                        </p:column>                                                                       
+                    </p:row>                 
+
+                    <p:row>                                            
+                        <p:column>
+                        	<p:inputText value="#{form_check.check.checkName}" label="Название" disabled="#{form_check.check==null}"   maxlength="50"/>
+                        </p:column>
+                    </p:row>
+            </p:panelGrid>     
+
+            
+            <p/>
+            <h:outputText value="Выберите словарь:"  styleClass="ui-widget" rendered="#{form_check.check!=null and form_check.check.getCheckID()==null}"/>            
+            <p/>
+
+            <p:dataTable value="#{form_check.list_Dictionary}" var="item" emptyMessage="Нет доступных словарей" paginator="true" selectionMode="single" selection="#{form_check.selectedDictionary}" rowKey="#{item.dictID}" rendered="#{form_check.check != null and form_check.check.getCheckID()==null}" paginatorPosition="bottom" rows="10">                        
+                <p:column headerText="Пользователь" styleClass="dictUser_column">
+                	<h:outputText value="#{item.dictUser.userName}"/>
+                </p:column>
+                                
+                <p:column headerText="Название"  styleClass="dictName_column">
+                	<h:outputText value="#{item.dictName}"/>
+                </p:column>
+                
+                <p:column  styleClass="dictDescription_column">
+                	<p:rowToggler  rendered="#{not empty item.dictDescription}"/> 
+                </p:column>
+
+                <p:column headerText="Создан" styleClass="dictDateTime_column">
+                    <h:outputText value="#{item.dictDateTime}">
+                        <f:convertDateTime type="both" pattern="dd.MM.yyyy HH:mm:s" />                        
+                    </h:outputText>
+                </p:column>
+                
+                <p:column headerText="Кол-во слов" styleClass="dict_numberOfWords_column">
+                	<h:outputText value="#{item.numberOfWords}"/>
+                </p:column>
+                                
+                <p:column headerText="Кол-во слов со звуком" styleClass="dict_numberOfWordsWithSound_column">
+                	<h:outputText value="#{item.numberOfWordsWithSound}"/>
+                </p:column>                
+                
+                <p:rowExpansion>
+                	<h:outputText value="Описание: "/>
+                	<h:outputText value="#{item.dictDescription}"/>
+                </p:rowExpansion>                    
+                
+            </p:dataTable>    
+            
+        </h:form>  
+
+
+		<p:spacer width="20"/>
+        <p:separator />          
+        
+        <h:form rendered="#{currentUser.authorized}">     
+        	
+        	        
+            <h:outputText value="Мои проверки:" styleClass="ui-widget"/> 
+            <p:spacer width="20"/>
+            <p:selectBooleanCheckbox value="#{form_my_checks.onlyDeleted}" itemLabel="Показать удаленные">
+                <p:ajax event="change" process="@this" update="@form form_my_checks" listener="#{form_my_checks.UpdateList}"/>
+            </p:selectBooleanCheckbox>
+            
+            <p:spacer width="20"/>
+            <p:selectBooleanCheckbox value="#{form_my_checks.onlyUnfinished}" itemLabel="Только незавершенные">
+                <p:ajax event="change" process="@this" update="@form form_my_checks" listener="#{form_my_checks.UpdateList}"/>
+            </p:selectBooleanCheckbox>
+            
+            <p:spacer width="20"/>
+            <p:commandLink value="Обновить" action="#{form_my_checks.UpdateList}" update="@form form_my_checks"/>    
+            
+        </h:form> 
+        <p:spacer width="5"/>            
+        
+        <h:form id="form_my_checks" rendered="#{currentUser.authorized}">             
+            <!-- <p:messages/>--> 
+            <!-- <p:messages for="form_my_checks"/>-->
+            <p:message for="form_my_checks" showSummary="true"/>
+            
+            <p:dataTable  value="#{form_my_checks.list_Check}" var="item" emptyMessage="Нет проверок"  paginator="true" paginatorPosition="bottom" rows="12">                        
+                
+                <p:column headerText="Название"  styleClass="checkName_column">
+                    <p:inputText value="#{item.checkName}" label="Название"   maxlength="50" style="width:200px;"/>
+                </p:column>                
+                
+                <p:column headerText="Создана" styleClass="checkDateTime_column">
+                    <h:outputText value="#{item.checkDateTime}">
+                        <f:convertDateTime type="both" pattern="dd.MM.yyyy HH:mm:s" />                        
+                    </h:outputText>                    
+                </p:column>                
+                
+                <p:column headerText="Словарь" styleClass="checkDict_dictName_column">
+                	<h:outputText value="#{item.checkDict.dictName}"/>
+                </p:column>
+                
+                <p:column styleClass="check_action_save_column">
+                    <p:commandLink value="Сохранить" action="#{form_my_checks.Update(item)}" update="@form" process="@form"/>
+                </p:column>                       
+                              
+                <p:column styleClass="check_action_begin_column">
+                    <p:link value="Начать проверку" outcome="check" rendered="#{item.checkPass==0 and !item.checkFinished}">
+                        <f:param name="checkID" value="#{item.checkID}" />
+                    </p:link>
+                
+                    <p:link value="Продолжить проверку" outcome="check"  rendered="#{item.checkPass!=0 and !item.checkFinished}">
+                        <f:param name="checkID" value="#{item.checkID}" />
+                    </p:link>
+                    
+                    <h:outputText value="Завершена"  rendered="#{item.checkFinished}"/>
+                </p:column>                       
+                                
+                <p:column headerText="Проход" styleClass="checkPass_column">
+                	<h:outputText value="#{item.checkPass}" rendered="#{item.checkPass!=0}"/>
+                </p:column>                
+
+                <p:column headerText="Кол-во слов" styleClass="check_numberOfCheckedWords_column">
+                	<h:outputText value="#{item.numberOfCheckedWords}" rendered="#{item.checkPass!=0}"/>
+                </p:column>
+                
+                
+                <p:column styleClass="check_action_delete_column">
+                    <p:commandLink value="Удалить (из списка)" action="#{form_my_checks.MarkDeleted(item)}" update="@form" process="@form" rendered="#{!item.checkDeleted}"/>
+                    <p:commandLink value="Отменить удаление" action="#{form_my_checks.UnMarkDeleted(item)}" update="@form" process="@form"  rendered="#{item.checkDeleted}"/>
+                </p:column>                       
+                
+
+                
+            </p:dataTable>    
+        
+        </h:form> 
+        
+    </h:body>
+</html>
+
+
+
+

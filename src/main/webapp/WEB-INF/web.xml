@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app version="3.1"
+         xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         metadata-complete="false">
+
+    <welcome-file-list>
+        <welcome-file>faces/index.xhtml</welcome-file>
+    </welcome-file-list>
+		 
+	<context-param>
+		<param-name>javax.faces.PROJECT_STAGE</param-name>
+		<param-value>Development</param-value>
+	</context-param>
+		 
+    <context-param>  
+        <param-name>primefaces.THEME</param-name>  
+        <param-value>bootstrap</param-value>  
+    </context-param>     
+		
+	<!--	 
+	<security-constraint>
+   		<web-resource-collection>
+      		<web-resource-name>SecureConnection</web-resource-name>
+        		<url-pattern>
+        			/faces/login.xhtml
+        		</url-pattern>
+        
+        		<url-pattern>
+        			/faces/change_password.xhtml        	
+        		</url-pattern>
+
+		        <url-pattern>
+        			/faces/change_user.xhtml
+        		</url-pattern>
+
+		        <url-pattern>
+		        	/faces/registration.xhtml
+        		</url-pattern>
+        
+        		<http-method>GET</http-method>
+        		<http-method>POST</http-method>
+      		</web-resource-collection>
+     	<auth-constraint/>
+     	
+     	<user-data-constraint>
+        		<transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    	</user-data-constraint>
+	</security-constraint>
+	-->
+	 
+	<!--
+	<security-constraint>
+    	<web-resource-collection>
+        	<web-resource-name>WEB_APPLICATION_NAME</web-resource-name>
+        		<url-pattern>
+        			/faces/login.xhtml
+        		</url-pattern>
+        
+        		<url-pattern>
+        			/faces/change_password.xhtml        	
+        		</url-pattern>
+
+		        <url-pattern>
+        			/faces/change_user.xhtml
+        		</url-pattern>
+
+		        <url-pattern>
+		        	/faces/registration.xhtml
+        		</url-pattern>
+        
+        	
+    	</web-resource-collection>
+    	<user-data-constraint>
+	    <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    	</user-data-constraint>
+	</security-constraint>	
+	-->	 
+         
+</web-app>
+

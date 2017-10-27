@@ -1,0 +1,129 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>DictionaryPermissions</title>
+    </h:head>
+    
+    <h:body rendered="#{currentUser.user.userAdmin}">        
+        
+        <ui:include src="/WEB-INF/menu.xhtml" />
+        <ui:include src="/WEB-INF/form_current_user.xhtml" /> 
+        
+        <h:form>            
+            <h:outputText value="DictionaryPermission"/>                                
+            <h:messages/>
+            <h:panelGrid columns="2" border="1">                              
+                
+                <h:outputText value="dictID"/>                                
+                <h:inputText value="#{controller_dictionarypermission.dictionaryPermission.dictID}"></h:inputText>                                                               
+
+                <h:outputText value="userID"/>                                
+                <h:inputText value="#{controller_dictionarypermission.dictionaryPermission.userID}"></h:inputText>                                                               
+                
+                <h:outputText value="dictPermWriteAccess"/>                                
+                <h:selectBooleanCheckbox value="#{controller_dictionarypermission.dictionaryPermission.dictPermWriteAccess}" />                
+
+                
+            </h:panelGrid>     
+            
+            <h:commandButton action="#{controller_dictionarypermission.SaveNew}" value="SaveNew"/>    
+        </h:form>    
+        
+        
+        <h:form> 
+            <h:outputText value="DictionaryPermissions list"/>                                
+            <h:commandButton action="#{controller_table_dictionarypermissions.UpdateList}" value="UpdateList"/>                
+        </h:form>    
+        
+        <h:form>             
+            <h:dataTable value="#{controller_table_dictionarypermissions.list_DictionaryPermission}" var="item" border="1">                        
+
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="dictPermID"/>                                                        
+                    </f:facet>
+                    <h:outputText value="#{item.dictPermID}"/>                                    
+                </h:column>
+                
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="dictID"/>                                                        
+                    </f:facet>
+                    <h:inputText value="#{item.dictID}"/>                
+                </h:column>
+                
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="dictName"/> 
+                    </f:facet>  
+                    
+                    <h:outputText value="#{item.dictPermDict.dictName}"/>                
+                </h:column>
+                
+                
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="userID"/> 
+                    </f:facet>  
+                    
+                    <h:inputText value="#{item.userID}"/>                
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="userLogin"/> 
+                    </f:facet>  
+                    
+                    <h:outputText value="#{item.dictPermUser.userLogin}"/>                
+                </h:column>
+                
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="userName"/> 
+                    </f:facet>  
+                    
+                    <h:outputText value="#{item.dictPermUser.userName}"/>                
+                </h:column>
+
+
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="dictPermWriteAccess"/> 
+                    </f:facet>  
+                    
+                    <h:selectBooleanCheckbox value="#{item.dictPermWriteAccess}" />                
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value=""/>
+                    </f:facet>
+                    
+                    <h:commandButton value="Delete" action="#{controller_table_dictionarypermissions.Delete}">
+                        <f:setPropertyActionListener target="#{controller_table_dictionarypermissions.dictionaryPermission}" value="#{item}"/>
+                    </h:commandButton>
+                </h:column>                       
+
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value=""/>
+                    </f:facet>
+                    
+                    <h:commandButton value="Update" action="#{controller_table_dictionarypermissions.Update}">
+                        <f:setPropertyActionListener target="#{controller_table_dictionarypermissions.dictionaryPermission}" value="#{item}"/>
+                    </h:commandButton>
+                </h:column>                       
+
+                
+            </h:dataTable>    
+        </h:form> 
+
+        
+    </h:body>
+</html>
+
+

@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Test</title>
+    </h:head>
+    
+    <h:outputScript library="js" name="swfobject.js"></h:outputScript>
+    <h:outputScript library="js" name="flash.js"></h:outputScript>
+    <h:outputScript library="js" name="general.js"></h:outputScript>
+    
+    <h:outputStylesheet library="css" name="index.css"/>
+    
+    
+    <h:body onload="onload_test()"  rendered="#{currentUser.user.userAdmin}">
+    
+    	<ui:include src="/WEB-INF/menu.xhtml" />
+   
+   
+		<h:panelGroup  rendered="false">   
+   			<p/>
+   			<h:outputText value="Загрузка файла 1.18"/>
+   			<p/>
+
+			<form id="uploadbanner" enctype="multipart/form-data" method="post" action="/SpellRefiner2/upload_word_sounds">
+   				<input id="wordSound" name="wordSound" type="file" />
+   				<input id="wordID" name="wordID"  value="1"/>
+   				<input id="wordHasSound" name="wordHasSound"  value="true"/>
+   				<input type="submit" value="submit" id="submit" />
+			</form>     
+		
+		</h:panelGroup>   
+		
+		<p/>
+		<p/>
+		
+		<h:panelGroup  rendered="false">
+			<form>
+                <p:commandLink value="Записать звук"  onclick="javascript:Recorder_StartRecording('1')"/>
+                <p/>
+                <p/>                    
+
+                <p:commandLink value="Остановить запись"  onclick="javascript:Recorder_StopAndUpload()"/>                    
+			</form>
+		</h:panelGroup>
+		<p/>
+		<p/>
+		
+		<h:panelGroup  rendered="false">
+        	<form id="from_player">
+            	<div id="Flash_SoundRecorder">		
+                	<p><a href="http://www.adobe.com/go/getflashplayer">Get Adobe Flash player</a></p>
+            	</div>
+        	</form>
+
+         	<p/>
+         	<p/>
+        </h:panelGroup>
+		
+		<h:panelGroup  rendered="false">
+        	<form id="from_player">
+            	<audio id="audio_general" controls="controls"/>        
+        
+	        </form>
+		 </h:panelGroup>
+
+		
+    </h:body>    
+    
+</html>
+
+
+

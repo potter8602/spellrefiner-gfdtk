@@ -1,0 +1,557 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pass="http://xmlns.jcp.org/jsf/passthrough">
+
+    <f:metadata>
+        
+        <f:viewParam name="checkID" value="#{form_input.check}" converter="#{checkConverter}" 
+            converterMessage="Unknown check."
+            required="false" requiredMessage="Bad request. No checkID."/>
+            
+            
+		<f:viewParam name="checkID" value="#{accessControl.check}" converter="#{checkConverter}"/>
+		
+		
+		<f:viewAction action="#{accessControl.Update_Access_Check}" />            
+            
+            
+
+        <f:viewAction action="#{form_input.GotoNextWord}" />        
+        <f:viewAction action="#{form_dictionary_errors.setWord(form_input.word)}" />
+        <f:viewAction action="#{form_dictionary_errors.UpdateForm()}" />
+    </f:metadata>       
+    
+    <h:head>
+        <title>Проверка</title>
+    </h:head>
+    
+    <h:outputScript library="js" name="general.js"></h:outputScript>
+    
+   <h:outputStylesheet library="css" name="index.css"/>
+    
+   
+    <h:body onload="onload_check()">        
+        
+        <ui:include src="/WEB-INF/menu.xhtml" />
+        
+
+		<p:spacer width="10"/>
+		
+		<p:panel collapsed="true" toggleable="true" header="Описание страницы">
+			
+			<p>			
+				На данной странице производится ввод проверки (вводятся слова и проверяются на ошибки ввода).
+				<br/>
+				<br/>В верхней части страницы выводится наименование проверки, словарь, количество слов в словаре.
+				<br/>Кнопка «Начать первый проход» доступна для новой (не начатой) проверки. При нажатии на кнопку можно перейти к вводу первого прохода проверки.
+				<br/>
+				<br/>В первом проходе выводится раздел сортировки и фильтров слов.
+				<br/>В порядке сортировки можно выбрать направление сортировки «По возрастанию» или «По убыванию». Также выбрать способ сортировки «По алфавиту», «В случайном порядке», «В порядке создания».
+				<br/>В фильтре слов можно отобрать слова только со звуком, сняв флаг «Без звука» и установив флаг «Со звуком».
+				<br/>Отобрать список слов без звука, можно сняв флаг «Со звуком» и установив флаг «Без звука».
+				<br/>С помощью флага «Кроме слов в завершенных проверках» исключаем слова, которые уже были пройдены в других завершенных и не удаленных проверках.
+				<br/>С помощью флага «По тому же словарю» исключаем слова, которые уже были пройдены в других завершенных и не удаленных проверках по тому же словарю.
+				<br/>
+				<br/>Ниже на странице располагается форма ввода слова проверки.
+				<br/>В форме выводится перевод и описание слова. Кнопкой «Проиграть» можно прослушать слово. 
+				<br/>В поле «Введите слово» нужно ввести написание слова.
+				<br/>В случае, если не уверенности в правильном написании слова, то следует установить флаг «Не уверен».
+				<br/>После нажатия на кнопку «Сохранить» будет проверена правильность написания слова по словарю.
+				<br/>В случае ошибки будет выведено сообщение «Ошибка» и написание слова из словаря.
+				<br/>В случае правильного написания будет выведено «Правильно» и написание слова из словаря.
+				<br/>Кнопкой «Пропустить слово» слово будет пропущено и больше не будет предлагаться к проверке. Что бы отменить это действие, нужно вернуться назад к пропущенному слову кнопкой «Назад» и нажать на кнопку «Отменить пропуск слова».
+				<br/>Введя некоторое количество слов проверки (необязательно все слова из словаря) можно завершить первый проход.
+				<br/>Слова с ошибками и с пометкой «Не уверен» перейдут в следующий проход.
+				<br/>Кнопками «Назад» и «Вперед» можно перемещаться по введенным словам (если нужно изменить установку флага «Не уверен» или изменить введенное слово – например в случае опечатки).
+				<br/>Кнопкой «Подсмотреть» показывается написание слова.
+				<br/>В первом проходе также доступен тренировочный режим (включается установкой флага «Тренировка»), в котором показывается написание слова и автоматически устанавливается пометка «Не уверен». Режим нужен в случае, если в словаре много незнакомых слов (слов которые ни разу не использовались при письме).
+				<br/>
+				<br/>Во втором и следующих проходах будут предлагаться слова в порядке их ввода в первом проходе (сортировка и фильтр слов уже будут недоступны).
+				<br/>При вводе всех слов прохода станет доступно действие «Начать следующий проход».
+				<br/>Когда в новом проходе не останется слов для ввода станет доступно действие «Завершить проверку».
+				<br/>
+				<br/>Ниже на странице размещается форма для ввода ошибок в словаре.
+				<br/>Если в словаре допущена ошибка (в написании слова, переводе, описании, звуке или другое) или есть замечания по слову, то можно указать об этом в форме ввода ошибок. 
+				<br/>Для этого нужно нажать на кнопку «Указать на ошибку в словаре». В открывшейся форме ввода ошибки отменить флажками, в чем ошибка и (если нужно) добавить комментарий. Для записи ошибки следует нажать кнопку «Сохранить». Закрыть форму ввода можно кнопкой «Закрыть».
+				<br/>
+				<br/>Ниже на странице выводится список ошибок в словаре по вводимому слову (в том числе от других пользователей). Указывается содержание ошибки, пользователь, когда добавлена ошибка и признак обработки (исправления) ошибки автором словаря.
+				<br/>
+				<br/>В форме ввода слова доступны горячие клавиши:
+				<br/>ALT+J - Проиграть слово
+				<br/>ALT+K - Поместить курсор в поле ввода слова
+				<br/>ALT+L - Сохранить
+				<br/>ALT+; или ALT+M - Следующее слово
+				<br/>ALT+U - Установить флаг "Не уверен"
+				<br/>ALT+I - Подсмотреть слово
+			</p>
+			
+		</p:panel>
+        
+
+        <h:form id="form_messages" >            
+            <p:messages globalOnly="true"/>            
+        </h:form>        
+        
+        <h:form id="form_input_check" rendered="#{currentUser.authorized and accessControl.writeAccess_Check}">
+        
+        	<p:spacer width="20"/>
+        	<p:separator />            
+            
+            <p:message for="form_input_check"  showSummary="true"/>
+            
+            <p:panelGrid>        
+                    <p:row>
+                        <p:column>Проверка</p:column>
+                        <p:column>Название словаря</p:column>
+                        <p:column rendered="#{form_input.check.checkPass==0}">Количество слов в словаре</p:column>
+                        <p:column rendered="#{form_input.check.checkPass ge 1}">Проход</p:column>
+                        
+                        <p:column rowspan="2" rendered="#{form_input.check.checkPass==0}">
+                            <p:commandLink value="Начать первый проход" actionListener="#{form_input.StartNewPass}" update="@all" process="@form" disabled="#{form_input.GetNumberOfDictionaryWords()==0}">
+                                <f:setPropertyActionListener target="#{form_dictionary_errors.word}" value="#{form_input.word}" />
+                                <f:actionListener binding="#{form_dictionary_errors.UpdateForm()}" />
+                            </p:commandLink>  
+                            
+                            
+                        </p:column>
+
+                        <p:column rowspan="2" rendered="#{form_input.check.checkFinished}">
+                        	Проверка завершена
+                        </p:column>
+                        
+                    </p:row>
+                    
+                    <p:row>                        
+                        <p:column><h:outputText value="#{form_input.check.checkName}"/></p:column>
+                        <p:column><h:outputText value="#{form_input.check.checkDict.dictName}"/></p:column>
+                        <p:column rendered="#{form_input.check.checkPass==0}"><h:outputText value="#{form_input.GetNumberOfDictionaryWords()}"/></p:column>
+                        <p:column  rendered="#{form_input.check.checkPass ge 1}"><h:outputText value="#{form_input.check.checkPass}"/></p:column>
+                    </p:row>
+            </p:panelGrid>      
+            
+            
+                                  
+        </h:form>                
+        
+        
+        
+        <h:form id="form_input_orders_filters" rendered="#{form_input.check.checkPass==1 and currentUser.authorized and accessControl.writeAccess_Check}">
+        
+            <p:blockUI block="form_input_orders_filters" animate="true" trigger="ascendingOrder, descendingOrder, alphabeticalOrder, randomNumberOrder, wordIDOrder, withSound, withoutSound, exceptWordsInFinishedChecks, exceptWordsInFinishedChecksSameDictionary" >
+            	Подождите...
+            </p:blockUI>  
+        
+	        <p:spacer width="30"/>      
+    	    <p:separator/>
+           
+            <h:messages/>
+            <p:panelGrid>                
+                <p:row>                                    
+
+                    <p:column>Порядок сортировки:<p:spacer width="10"/></p:column>
+
+                    <p:column >
+                        <p:selectBooleanCheckbox id="ascendingOrder" value="#{form_input.ascendingOrder}" itemLabel="По возрастанию">
+                            <p:ajax event="change" process="@this" update="@form form_input form_dictionary_error form_input_check"/>
+                        </p:selectBooleanCheckbox>                    
+                    </p:column>
+                    
+            
+                    <p:column>
+                        <p:selectBooleanCheckbox id="descendingOrder" value="#{form_input.descendingOrder}" itemLabel="По убыванию">
+                            <p:ajax event="change" process="@this" update="@form form_input form_dictionary_error form_input_check"/>
+                        </p:selectBooleanCheckbox>
+                    </p:column>
+            
+                    <p:column>
+                        <p:selectBooleanCheckbox id="alphabeticalOrder" value="#{form_input.alphabeticalOrder}" itemLabel="По алфавиту">                        
+                            <p:ajax event="change"  process="@this" update="@form form_input form_dictionary_error form_input_check" listener="#{form_input.ChangeWordsOrder('wordSpelling')}"/>                            
+                        </p:selectBooleanCheckbox>
+                    </p:column>
+            
+                    <p:column>
+                        <p:selectBooleanCheckbox id="randomNumberOrder" value="#{form_input.randomNumberOrder}" itemLabel="В случайном порядке">                        
+                            <p:ajax event="change" process="@this" update="@form form_input form_dictionary_error form_input_check" listener="#{form_input.ChangeWordsOrder('wordRandomNumber')}"/>                            
+                        </p:selectBooleanCheckbox>                    
+                    </p:column>
+            
+                    <p:column>
+                        <p:selectBooleanCheckbox id="wordIDOrder"  value="#{form_input.wordIDOrder}" itemLabel="В порядке создания">                        
+                            <p:ajax event="change"  process="@this" update="@form form_input form_dictionary_error form_input_check" listener="#{form_input.ChangeWordsOrder('wordID')}"/>                            
+                        </p:selectBooleanCheckbox>                    
+                    </p:column>
+                              
+
+                </p:row>    
+                
+                <p:row>
+                    
+                    <p:column>Фильтр:</p:column>
+                        
+                    <p:column>
+                        <p:selectBooleanCheckbox id="withSound" value="#{form_input.withSound}" itemLabel="Со звуком">
+                            <p:ajax event="change" process="@this" update="@form form_input form_dictionary_error form_input_check"/>
+                        </p:selectBooleanCheckbox>
+                    </p:column>    
+            
+                    <p:column>    
+                        <p:selectBooleanCheckbox  id="withoutSound" value="#{form_input.withoutSound}" itemLabel="Без звука">
+                            <p:ajax event="change" process="@this" update="@form form_input form_dictionary_error form_input_check"/>
+                        </p:selectBooleanCheckbox>                    
+                    </p:column>
+                    
+                    <p:column colspan="2">    
+                        <p:selectBooleanCheckbox  id="exceptWordsInFinishedChecks" value="#{form_input.exceptWordsInFinishedChecks}" itemLabel="Кроме слов в завершенных проверках">
+                            <p:ajax event="change" process="@this" update="@form form_input form_dictionary_error form_input_check"/>
+                        </p:selectBooleanCheckbox>                    
+                    </p:column>    
+
+                    <p:column >    
+                        <p:selectBooleanCheckbox id="exceptWordsInFinishedChecksSameDictionary" value="#{form_input.exceptWordsInFinishedChecksSameDictionary}" itemLabel="По тому же словарю">
+                            <p:ajax event="change" process="@this" update="@form form_input form_dictionary_error form_input_check"/>
+                        </p:selectBooleanCheckbox>                    
+                    </p:column>    
+                        
+                </p:row>
+                
+                <p:row>
+                    
+                    <p:column>
+                        <p:selectBooleanCheckbox value="#{form_input.training}" itemLabel="Тренировка">
+                            <p:ajax event="change" process="@this" update="form_input"/>
+                        </p:selectBooleanCheckbox>
+                    </p:column>    
+                        
+                </p:row>    
+                    
+                
+                
+            </p:panelGrid> 
+        </h:form>     
+
+        
+        <h:form id="form_input" rendered="#{form_input.check.checkPass ge 1 and !form_input.check.checkFinished and currentUser.authorized and accessControl.writeAccess_Check}">
+        
+        
+        	<p:remoteCommand name="form_input_save" actionListener="#{form_input.Save}" update="@form form_dictionary_error form_messages form_input_check" />
+        	
+        	<p:remoteCommand name="form_input_goto_next_word" actionListener="#{form_input.GotoNextWord}" update="@form form_dictionary_error form_messages form_input_check form_dictionary_errors form_input"  rendered="#{!(form_input.word==null or form_input.input.inputID==null or form_input.numberOfWordsForInput==form_input.numberOfInputWordsInCurrentPass)}"/>
+        	<p:remoteCommand name="form_input_goto_next_word" update="@form form_dictionary_error form_messages form_input_check form_dictionary_errors form_input"  rendered="#{(form_input.word==null or form_input.input.inputID==null or form_input.numberOfWordsForInput==form_input.numberOfInputWordsInCurrentPass)}"/>        	
+        	
+        	<p:remoteCommand name="form_input_play" onstart="javascript:audio_general_play('${form_input.word.wordID}');" update="@form form_dictionary_error form_messages form_input_check form_dictionary_errors form_input"/>
+        	
+        	<p:remoteCommand name="form_input_set_focus" onstart="javascript:set_focus('form_input:wordInput');"/>
+        	
+        	<p:remoteCommand name="form_input_set_uncertain" actionListener="#{form_input.SetUncertain}" update="@form" />
+        	
+        	
+	        <p:spacer width="20"/>
+    	    <p:separator rendered="false"/>
+           
+            <p:message for="form_input" showSummary="true"/>
+
+            <p:separator />
+        
+            <p:panelGrid>      
+            
+                    <p:row>
+                        <p:column>Слов для ввода: <h:outputText value="#{form_input.numberOfWordsForInput}"/></p:column>
+                        <p:column>Введено слов: <h:outputText value="#{form_input.numberOfInputWordsInCurrentPass}"/></p:column>                        
+                    
+                    </p:row>
+            
+            		<p:row>
+            			<p:column colspan="7">
+            				<p:spacer width="5"/>
+            			</p:column>
+            		</p:row>
+              
+                    <p:row>
+                    	<p:column rendered="#{form_input.training}">Слово</p:column>
+                        <p:column>Перевод</p:column>
+                        <p:column>Описание</p:column>
+                        <p:column>Звук</p:column>
+                    
+                        <p:column>Введите слово</p:column>
+                        <p:column>Не уверен</p:column>
+                        
+                        <p:column rowspan="2">
+                            <p:commandLink value="Сохранить" action="#{form_input.Save}" update="@form form_dictionary_error form_messages form_input_check" process="@form"  disabled="#{form_input.word==null}" title="ALT+L"/>
+                        </p:column>
+
+                        <p:column rowspan="2">
+                            <p:commandLink value="Следующее слово" actionListener="#{form_input.GotoNextWord}" update="@form form_dictionary_error form_messages form_input_check form_dictionary_errors form_input" process="@form" disabled="#{form_input.word==null or form_input.input.inputID==null or form_input.numberOfWordsForInput==form_input.numberOfInputWordsInCurrentPass}" title="ALT+M, ALT+'">
+                                <f:setPropertyActionListener target="#{form_dictionary_errors.word}" value="#{form_input.word}" />
+                                <f:actionListener binding="#{form_dictionary_error.Close()}" />                    
+                                <f:actionListener binding="#{form_dictionary_errors.UpdateForm()}" />
+                            </p:commandLink>    
+                        </p:column>
+
+                        
+                    </p:row>
+                    
+                    <p:row>
+                    
+                        <p:column rendered="#{form_input.training}">                        	
+                        	<h:outputText value="#{form_input.word.wordSpelling}"/>
+                        </p:column>
+                    
+                        <p:column><h:outputText value="#{form_input.word.wordTranslation}"/></p:column>
+                        <p:column><h:outputText value="#{form_input.word.wordDescription}" /></p:column>
+                        
+                        
+		                <p:column>
+                		    <p:commandLink value="Проиграть"  onclick="javascript:audio_general_play('${form_input.word.wordID}')" rendered="#{form_input.word.wordHasSound}" title="ALT+J"/>
+                		    <h:outputText value="Нет звука" rendered="#{!form_input.word.wordHasSound}"/>
+        		        </p:column>                       
+                    
+                        <p:column><p:inputText id="wordInput" value="#{form_input.input.wordInput}" disabled="#{form_input.word==null}"  title="ALT+K"/></p:column>
+                        <p:column>
+                        	<p:selectBooleanCheckbox id="form_input_uncertain" value="#{form_input.input.uncertain}" disabled="#{form_input.word==null}">
+                        	</p:selectBooleanCheckbox>
+                        	                        	
+                        	<p:tooltip for="form_input_uncertain" value="ALT+U" trackMouse="true" />                   
+                        
+                        </p:column>
+                        
+                        
+                    </p:row>
+                    
+                    <p:row>                        
+                        <p:column>
+                        	<p:commandLink value="Пропустить слово" actionListener="#{form_input.SkipWord}" update="@form form_dictionary_error form_dictionary_errors form_messages form_input_check" process="@form" disabled="#{form_input.word==null}" rendered="#{!form_input.input.skipped}">
+                                <f:setPropertyActionListener target="#{form_dictionary_errors.word}" value="#{form_input.word}" />
+                                <f:actionListener binding="#{form_dictionary_error.Close()}" />                    
+                                <f:actionListener binding="#{form_dictionary_errors.UpdateForm()}" />                        	
+                        	</p:commandLink>
+                        	
+                        	<p:commandLink value="Отменить пропуск слова" actionListener="#{form_input.UnSkipWord}" update="@form form_dictionary_error form_dictionary_errors form_messages form_input_check" process="@form" disabled="#{form_input.word==null}" rendered="#{form_input.input.skipped}">
+                                <f:setPropertyActionListener target="#{form_dictionary_errors.word}" value="#{form_input.word}" />
+                                <f:actionListener binding="#{form_dictionary_error.Close()}" />                    
+                                <f:actionListener binding="#{form_dictionary_errors.UpdateForm()}" />                        	
+                        	</p:commandLink>
+                        	
+                        </p:column>
+                        
+                        <p:column colspan="1">
+                        	<p:commandLink value="Назад" actionListener="#{form_input.GotoPreviousInput}" update="@form form_dictionary_error form_dictionary_errors form_messages form_input_check" process="@form" disabled="#{form_input.noPreviousInput}">
+                                <f:setPropertyActionListener target="#{form_dictionary_errors.word}" value="#{form_input.word}" />
+                                <f:actionListener binding="#{form_dictionary_error.Close()}" />                    
+                                <f:actionListener binding="#{form_dictionary_errors.UpdateForm()}" />                        	
+                        	</p:commandLink>
+                        	
+                        	<p:spacer width="15"/>
+                        	
+                        	<p:commandLink value="Вперед" actionListener="#{form_input.GotoNextInput}" update="@form form_dictionary_error form_dictionary_errors form_messages form_input_check" process="@form"  disabled="#{form_input.noNextInput}">
+                                <f:setPropertyActionListener target="#{form_dictionary_errors.word}" value="#{form_input.word}" />
+                                <f:actionListener binding="#{form_dictionary_error.Close()}" />                    
+                                <f:actionListener binding="#{form_dictionary_errors.UpdateForm()}" />                        	
+                        	</p:commandLink>
+                        	
+                        </p:column>
+                        
+
+                        <p:column colspan="1">
+                        	<p:commandLink value="Подсмотреть" update="@none" process="@none" onclick="form_input_show_hidden_word_spelling()" title="ALT+I">
+                        	</p:commandLink>
+                        </p:column>
+                        
+                        <p:column colspan="4">
+                        	<!-- <h:outputText style="display:none" class="hidden_word_spelling" value="#{form_input.word.wordSpelling}"/> -->
+                        	
+                        	<p:inputText style="display:none" class="hidden_word_spelling" value="#{form_input.word.wordSpelling}" readonly="true" rendered="#{form_input.word.wordID!=null}"/>
+                        	
+                        </p:column>
+                        
+                    </p:row>
+                    
+                    
+            		<p:row>
+            			<p:column colspan="7">
+            				<p:spacer width="5"/>
+            			</p:column>
+            		</p:row>
+
+                    <p:row>
+                        <p:column rendered="#{form_input.input.inputID==null}">
+                        	<p:spacer width="5"/>
+                        </p:column>     
+
+                        <p:column style="background-color: PaleGreen;" rendered="#{form_input.input.inputID!=null and !form_input.input.error}">
+                        	<h:outputText value="Правильно" rendered="#{form_input.input.inputID!=null and !form_input.input.error}"/>
+                        </p:column>     
+
+                        <p:column style="background-color: LightCoral;" rendered="#{form_input.input.inputID!=null and form_input.input.error}">
+                        	<h:outputText value="Ошибка" rendered="#{form_input.input.inputID!=null and form_input.input.error}"/>
+                        </p:column>     
+
+                        <p:column>
+                        	<h:outputText value="Слово в словаре" rendered="#{form_input.input.inputID!=null}"/>
+                        </p:column>
+                        
+                        <p:column>
+                        	<h:outputText value="#{form_input.word.wordSpelling}" rendered="#{form_input.input.inputID!=null}"/>
+                        </p:column>
+                                                                   
+                    </p:row>
+                    
+            		<p:row>
+            			<p:column colspan="7">
+            				<p:spacer width="5"/>
+            			</p:column>
+            		</p:row>
+                    
+                    
+                    <p:row>
+                        <p:column colspan="7">
+                            <p:commandLink style="font-weight: bold" value="Завершить проход" actionListener="#{form_input.StartNewPass}" update="@all" process="@form" rendered="#{form_input.check.checkPass==1 and form_input.numberOfWordsForInput!=0 and form_input.numberOfRemainingWordsInCurrentPass!=0}" disabled="#{form_input.numberOfInputWordsInCurrentPass==0}">
+                                <f:setPropertyActionListener target="#{form_dictionary_errors.word}" value="#{form_input.word}" />
+                                <f:actionListener binding="#{form_dictionary_error.Close()}" />                    
+                                <f:actionListener binding="#{form_dictionary_errors.UpdateForm()}" />
+                            </p:commandLink>    
+                        
+                            <p:commandLink style="font-weight: bold" value="Начать следующий проход" actionListener="#{form_input.StartNewPass}" update="@all" process="@form" rendered="#{form_input.check.checkPass gt 1 and form_input.numberOfWordsForInput!=0 and form_input.numberOfRemainingWordsInCurrentPass!=0}" disabled="#{form_input.numberOfWordsForInput!=form_input.numberOfInputWordsInCurrentPass}">
+                                <f:setPropertyActionListener target="#{form_dictionary_errors.word}" value="#{form_input.word}" />
+                                <f:actionListener binding="#{form_dictionary_error.Close()}" />                    
+                                <f:actionListener binding="#{form_dictionary_errors.UpdateForm()}" />
+                            	
+                            </p:commandLink>
+                            
+                            <p:commandLink style="font-weight: bold" value="Завершить проверку" actionListener="#{form_input.FinishCheck}" update="@all" process="@form" rendered="#{form_input.check.checkPass ge 1 and form_input.numberOfWordsForInput==0 or form_input.numberOfRemainingWordsInCurrentPass==0}">
+                                <f:setPropertyActionListener target="#{form_dictionary_errors.word}" value="#{form_input.word}" />
+                                <f:actionListener binding="#{form_dictionary_error.Close()}" />                    
+                                <f:actionListener binding="#{form_dictionary_errors.UpdateForm()}" />                            	
+                            </p:commandLink>
+                            
+                            <p:spacer width="5" rendered="#{form_input.check.checkFinished}"/>
+                        </p:column>
+                        
+                    </p:row>
+                    
+
+            		<p:row>
+            			<p:column colspan="7">
+            				<p:spacer width="5"/>
+            			</p:column>
+            		</p:row>
+                    
+                    
+                    <p:row>                        
+                        <p:column colspan="2"><p:commandLink id="command_dictionary_error" value="Указать на ошибку в словаре" action="#{form_dictionary_error.AddDictionaryError(form_input.word)}" update="@this form_dictionary_error" process="@form" disabled="#{form_dictionary_error.word == form_input.word}"/></p:column>
+                    </p:row>
+                    
+                    
+                    
+            </p:panelGrid>    
+            
+            
+        </h:form>         
+        
+        
+        
+        
+        <h:form id="form_dictionary_error" rendered="#{form_input.check.checkPass ge 1 and !form_input.check.checkFinished and currentUser.authorized and accessControl.writeAccess_Check}">
+        	<p:message for="form_dictionary_error"  showSummary="true"/>
+            
+            <p:panelGrid rendered="#{form_input.word!=null and form_dictionary_error.word == form_input.word}">                                                              
+                
+                    <p:row>
+                    	<p:column rowspan="2">Ошибка в слове:</p:column>
+                        <p:column>Написание слова</p:column>
+                        <p:column>Звук</p:column>
+                        <p:column>Перевод</p:column>
+                        <p:column>Описание</p:column>
+                        <p:column>Другое</p:column>
+                        <p:column>Комментарий</p:column>
+                        <p:column>Слово в словаре</p:column>
+                        
+                        <p:column rowspan="2">
+                            <p:commandLink value="Сохранить" actionListener="#{form_dictionary_error.Save}" update="@form form_messages form_dictionary_errors" process="@form" disabled="#{form_input.word==null}">
+                                <f:setPropertyActionListener target="#{form_dictionary_errors.word}" value="#{form_input.word}" />                    
+                                <f:actionListener binding="#{form_dictionary_errors.UpdateForm()}" />                                
+                            </p:commandLink>
+                        </p:column>
+
+                        <p:column rowspan="2">
+                            <p:commandLink value="Закрыть" actionListener="#{form_dictionary_error.Close}" update="@form form_input:command_dictionary_error" process="@form">
+                            </p:commandLink>
+                        </p:column>
+
+                    </p:row>                 
+
+                
+                    <p:row>
+                        <p:column><p:selectBooleanCheckbox value="#{form_dictionary_error.dictionaryError.dictErrorSpelling}" /></p:column>
+                        <p:column><p:selectBooleanCheckbox value="#{form_dictionary_error.dictionaryError.dictErrorPronunciation}" /></p:column>
+                        <p:column><p:selectBooleanCheckbox value="#{form_dictionary_error.dictionaryError.dictErrorTranslation}" /></p:column>
+                        <p:column><p:selectBooleanCheckbox value="#{form_dictionary_error.dictionaryError.dictErrorDescription}" /></p:column>                        
+                        <p:column><p:selectBooleanCheckbox value="#{form_dictionary_error.dictionaryError.dictErrorOther}" /></p:column>
+                        <p:column><p:inputText value="#{form_dictionary_error.dictionaryError.dictErrorComment}"/></p:column>
+                        <p:column><h:outputText value="#{form_dictionary_error.word.wordSpelling}"/></p:column>
+                    </p:row>                 
+                
+            </p:panelGrid>     
+        </h:form>            
+        
+        
+        <h:form id="form_dictionary_errors" rendered="#{form_input.check.checkPass ge 1 and !form_input.check.checkFinished and currentUser.authorized and accessControl.writeAccess_Check}">    
+
+	        <p:spacer width="40"/>
+    	    <p:separator/>
+            
+            
+            <p:panelGrid>                                                              
+                <p:row>
+                    <p:column><h:outputText value="Ошибки в словаре" /></p:column>
+                    <p:column>
+                        <p:commandLink value="Обновить" action="#{form_dictionary_errors.UpdateForm()}" update="@form" process="@form">
+                            <f:setPropertyActionListener target="#{form_dictionary_errors.word}" value="#{form_input.word}" />                    
+                        </p:commandLink>
+                    </p:column>
+                </p:row> 
+            </p:panelGrid>    
+             
+            <p:spacer width="5"/>
+        
+            <p:dataTable value="#{form_dictionary_errors.list_DictionaryError}" var="item" emptyMessage="Нет ошибок в словаре">
+            	<p:column rendered="false" headerText="Слово"><h:outputText value="#{item.dictErrorWord.wordSpelling}" /></p:column>
+                <p:column  headerText="Ошибка в словаре"><h:outputText value="#{item.name}" /></p:column>
+                <p:column  headerText="Пользователь"><h:outputText value="#{item.dictErrorUser.userLogin}" /></p:column>
+                <p:column  headerText="Добавлена">
+                    <h:outputText value="#{item.dictErrorDateTime}">
+                        <f:convertDateTime type="both" pattern="dd.MM.yyyy HH:mm:ss" />
+                    </h:outputText>                                               
+                </p:column>
+                            
+                <p:column  headerText="Обработана"><p:selectBooleanCheckbox value="#{item.dictErrorProcessed}" disabled="true"/></p:column>                                                        
+                            
+                <p:column>
+                    <p:commandLink value="Удалить" action="#{form_dictionary_errors.Delete(item)}" update="@form" rendered="#{item.dictErrorUser==form_dictionary_errors.currentUser}"/>                    
+                </p:column>     
+                
+            </p:dataTable>
+            
+        </h:form>            
+        
+        <p:spacer width="40"/>
+        
+        <form id="from_player">
+            <p/>        
+            <audio id="audio_general" controls="controls"/>        
+            <p/>
+        
+        </form>
+        
+
+    </h:body>
+</html>
+
+
+
+

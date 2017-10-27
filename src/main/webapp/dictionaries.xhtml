@@ -1,0 +1,312 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+<!--
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core">    
+-->        
+    <h:head>
+        <title>Словари</title>
+    </h:head>
+    
+    
+   <h:outputStylesheet library="css" name="index.css"/>
+    
+   
+    <h:body>        
+        
+        <ui:include src="/WEB-INF/menu.xhtml" />
+
+		<p:spacer width="10"/>
+		
+		<p:panel collapsed="true" toggleable="true" header="Описание страницы">
+			
+			<p>
+				На данной странице можно создавать новые словари и просматривать списки доступных словарей.
+				<br/>Для создания словаря следует нажать кнопку «Добавить новый словарь», ввести имя словаря, установить (если нужно) флаг «Общий», ввести описание (необязательно) и сохранить словарь кнопкой «Сохранить».
+				<br/>При установке флага «Общий» данный словарь будет доступен для других пользователей. Флаг «Общий» можно поставить или снять и после создания словаря.
+				<br/>
+				<br/>Кнопкой «Обновить» обновляются списки словарей.
+				<br/>
+				<br/>Список «Мои словари» содержит словари, которые создали Вы сами.				 
+				<br/>Кнопкой «Редактировать» можно перейти на страницу редактирования словаря.
+				<br/>Кнопкой «Удалить (из списка)» можно пометить словарь как удаленный (он не будет показываться в списке и не будет доступен для выбора в проверках).
+				<br/>При отметке флага «Показать удаленные» в списке будут показаны удаленные словари. Действием «Отменить удаление» словарь снова становиться видимым в списке и доступным для использования.
+				<br/>	
+				<br/>Список «Доступные словари» содержит список словарей других пользователей, разрешенные лично Вам для использования или редактирования.
+				<br/>Кнопкой «Просмотр» можно перейти на страницу просмотра слов словаря. 
+				<br/>У словарей разрешенных для редактирования установлен флаг в колонке «Доступ на изменение» и доступна кнопка «Редактировать».
+				<br/>В колонке «Пользователь» указан автор словаря.
+				<br/>
+				<br/>Список «Общие словари» содержит общие словари (с пометкой «Общий»).
+				<br/>Кнопкой «Просмотр» можно перейти на страницу просмотра слов словаря.
+				<br/>В колонке «Пользователь» указан автор словаря.				
+				<br/>
+				<br/>В списках словарей, в колонке после названия словаря находится стрелка, при нажатии на которую открывается описание словаря.
+			</p>
+			
+		</p:panel>
+
+        <p:separator />
+
+
+        
+        <h:form  rendered="#{currentUser.authorized}">            
+            <p:messages/>
+            
+            <p:panelGrid>                                                              
+                
+                    <p:row>
+                    
+                        <p:column rowspan="2">
+                            <p:commandLink value="Добавить новый словарь" action="#{form_dictionary.NewDictionary}" update="@form" process="@form" disabled="#{form_dictionary.dictionary!=null and form_dictionary.dictionary.getDictID() == null}"/>
+                        </p:column>
+                    
+                        <p:column>Название</p:column>
+                        <p:column>Общий</p:column>
+                        
+                        <p:column rowspan="2">
+                            <p:commandLink value="Сохранить" action="#{form_dictionary.Save}" update="@form form_my_dictionaries form_allowed_dictionaries form_shared_dictionaries" process="@form"   disabled="#{form_dictionary.dictionary==null}">
+                                <f:actionListener binding="#{form_my_dictionaries.UpdateList()}" />                    
+                                <f:actionListener binding="#{form_allowed_dictionaries.UpdateList()}" />
+                            	<f:actionListener binding="#{form_shared_dictionaries.UpdateList()}" />
+                            </p:commandLink>
+                        </p:column>
+
+                        
+                        <p:column rowspan="2">
+                            <p:link value="Редактировать" outcome="dictionary"  disabled="#{form_dictionary.dictionary.getDictID()==null}">
+                                <f:param name="dictID" value="#{form_dictionary.dictionary.dictID}" />
+                            </p:link>
+                        </p:column>                       
+                        
+                        
+                    </p:row>                 
+
+                    <p:row>                    
+                        
+                        <p:column><p:inputText value="#{form_dictionary.dictionary.dictName}" label="Название" disabled="#{form_dictionary.dictionary==null}" maxlength="50" /></p:column>
+                        <p:column headerText="Общий"><p:selectBooleanCheckbox value="#{form_dictionary.dictionary.dictShared}"  disabled="#{form_dictionary.dictionary==null}"/></p:column>                
+                    </p:row>
+                    
+                    <p:row>                    
+                        <p:column>Описание:</p:column>
+                                                
+                        <p:column colspan="4">
+                       		<p:inputTextarea value="#{form_dictionary.dictionary.dictDescription}" label="Описание" disabled="#{form_dictionary.dictionary==null}" maxlength="299" size="300" rows="2" style="width:500px"/>
+                        </p:column>
+                                        
+                    </p:row>
+                    
+            </p:panelGrid>   
+            
+        </h:form>    
+
+        <p:separator />
+
+
+		<p:spacer width="30"/>
+		
+		
+        <h:form  rendered="#{currentUser.authorized}">             
+            <p:commandLink action="#{form_my_dictionaries.UpdateList}"  value="Обновить" ajax="false">                                                
+                <f:actionListener binding="#{form_allowed_dictionaries.UpdateList()}" />
+                <f:actionListener binding="#{form_shared_dictionaries.UpdateList()}" />
+            </p:commandLink>     
+        </h:form>    
+                      
+        
+        <p:separator styleClass="separator-section"/>
+        <h:form  rendered="#{currentUser.authorized}">             
+            <h:outputText value="Мои словари:" styleClass="ui-widget"/> 
+            <p:spacer width="20"/>
+            <p:selectBooleanCheckbox value="#{form_my_dictionaries.onlyDeleted}" itemLabel="Показать удаленные">
+                <p:ajax event="change" process="@this" update="@form form_my_dictionaries" listener="#{form_my_dictionaries.UpdateList}"/>
+            </p:selectBooleanCheckbox>    
+        </h:form>             
+        <p:separator />    
+        
+        <h:form id="form_my_dictionaries"  rendered="#{currentUser.authorized}">             
+            <p:messages/>
+            
+            <p:dataTable  value="#{form_my_dictionaries.list_Dictionary}" var="item" emptyMessage="Нет словарей" paginator="true" paginatorPosition="bottom" rows="10" paginatorAlwaysVisible="false">                        
+                
+                <p:column headerText="Название" styleClass="dictName_column">
+                	<h:outputText value="#{item.dictName}"/> 
+                </p:column>
+
+                <p:column   styleClass="dictDescription_column">
+                	<p:rowToggler  rendered="#{not empty item.dictDescription}"/> 
+                </p:column>
+                                
+                <p:column headerText="Создан" styleClass="dictDateTime_column">
+                    <h:outputText value="#{item.dictDateTime}">
+                        <f:convertDateTime type="both" pattern="dd.MM.yyyy HH:mm:s" />                        
+                    </h:outputText>                    
+                </p:column>                
+                
+                <p:column headerText="Общий" styleClass="dictShared_column">
+                	<h:selectBooleanCheckbox value="#{item.dictShared}"  disabled="true"/>
+                </p:column>                
+                
+                <p:column headerText="Кол-во слов" styleClass="dict_numberOfWords_column">
+                	<h:outputText value="#{item.numberOfWords}"/>
+                </p:column>
+                                
+                <p:column headerText="Кол-во слов со звуком" styleClass="dict_numberOfWordsWithSound_column">
+                	<h:outputText value="#{item.numberOfWordsWithSound}"/>
+                </p:column>                
+                
+                <p:column  styleClass="dict_action_change_column">
+                    <p:link value="Редактировать" outcome="dictionary" >
+                        <f:param name="dictID" value="#{item.dictID}" />
+                    </p:link>
+                </p:column>                       
+                
+                <p:column styleClass="dict_action_delete_column">
+                    <p:commandLink value="Удалить (из списка)" action="#{form_my_dictionaries.MarkDeleted(item)}" update="@form" process="@form" rendered="#{!item.dictDeleted}"/>
+                    <p:commandLink value="Отменить удаление" action="#{form_my_dictionaries.UnMarkDeleted(item)}" update="@form" process="@form"  rendered="#{item.dictDeleted}"/>
+                </p:column>                       
+
+                <p:rowExpansion>
+                	<h:outputText value="Описание: "/>
+                	<h:outputText value="#{item.dictDescription}"/>
+                </p:rowExpansion>                    
+                
+                
+            </p:dataTable>    
+        
+        </h:form> 
+        
+        <p:spacer width="30"/>
+        
+        <p:separator styleClass="separator-section"/>
+        <h:outputText value="Доступные словари:"  styleClass="ui-widget" rendered="#{currentUser.authorized}"/>                                             
+        <p:separator />
+        
+        <h:form id="form_allowed_dictionaries"  rendered="#{currentUser.authorized}">             
+            <p:dataTable value="#{form_allowed_dictionaries.list_Dictionary}" var="item" emptyMessage="Нет словарей" paginator="true" paginatorPosition="bottom" rows="10" paginatorAlwaysVisible="false">                        
+                
+                <p:column headerText="Пользователь" styleClass="dictUser_column">
+                	<h:outputText value="#{item.dictUser.userName}"/>
+                </p:column>
+                                
+                <p:column headerText="Название" styleClass="dictName_column">
+                	<h:outputText value="#{item.dictName}"/>
+                </p:column>
+                
+                <p:column  styleClass="dictDescription_column">
+                	<p:rowToggler  rendered="#{not empty item.dictDescription}"/> 
+                </p:column>
+                
+                
+                <p:column headerText="Создан" styleClass="dictDateTime_column">
+                    <h:outputText value="#{item.dictDateTime}">
+                        <f:convertDateTime type="both" pattern="dd.MM.yyyy HH:mm:s" />                        
+                    </h:outputText>
+                </p:column>
+                
+                <p:column headerText="Общий" styleClass="dictShared_column">
+                	<p:selectBooleanCheckbox value="#{item.dictShared}" disabled="true"/>
+                </p:column>
+                                                
+                <p:column headerText="Доступ на изменение" styleClass="dictWriteAccessCurrentUser_column">
+                	<p:selectBooleanCheckbox value="#{item.dictWriteAccessCurrentUser}" disabled="true"/>
+                </p:column>
+                
+                <p:column headerText="Кол-во слов" styleClass="dict_numberOfWords_column">
+                	<h:outputText value="#{item.numberOfWords}"/>
+                </p:column>
+                                
+                <p:column headerText="Кол-во слов со звуком" styleClass="dict_numberOfWordsWithSound_column">
+                	<h:outputText value="#{item.numberOfWordsWithSound}"/>
+                </p:column>                
+                
+                <p:column styleClass="dict_action_change_column">
+                    <p:link value="Редактировать" outcome="dictionary" rendered="#{item.dictWriteAccessCurrentUser}">
+                        <f:param name="dictID" value="#{item.dictID}" />
+                    </p:link>
+                    
+                    <p:link value="Просмотр" outcome="dictionary_view" rendered="#{!item.dictWriteAccessCurrentUser}">
+                        <f:param name="dictID" value="#{item.dictID}" />
+                    </p:link>
+                    
+                </p:column>   
+                
+                <p:rowExpansion>
+                	<h:outputText value="Описание: "/>	
+                	<h:outputText value="#{item.dictDescription}"/>
+                </p:rowExpansion>                    
+                                    
+                
+            </p:dataTable>    
+        </h:form> 
+
+		<p:spacer width="30"/>
+		
+        <p:separator styleClass="separator-section"/>        
+        <h:outputText value="Общие словари:"  styleClass="ui-widget" rendered="#{currentUser.authorized}"/>            
+        <p:separator />
+        
+        <h:form id="form_shared_dictionaries"  rendered="#{currentUser.authorized}">             
+            <p:dataTable value="#{form_shared_dictionaries.list_Dictionary}" var="item" emptyMessage="Нет словарей" paginator="true" paginatorPosition="bottom" rows="10" paginatorAlwaysVisible="false">                        
+                
+                <p:column headerText="Пользователь" styleClass="dictUser_column">
+                	<h:outputText value="#{item.dictUser.userName}"/>
+                </p:column>
+                                
+                <p:column headerText="Название" styleClass="dictName_column">
+                	<h:outputText value="#{item.dictName}"/>
+                </p:column>
+
+                <p:column styleClass="dictDescription_column">
+                	<p:rowToggler  rendered="#{not empty item.dictDescription}"/> 
+                </p:column>
+
+                <p:column headerText="Создан" styleClass="dictDateTime_column">
+                    <h:outputText value="#{item.dictDateTime}">
+                        <f:convertDateTime type="both" pattern="dd.MM.yyyy HH:mm:s" />                        
+                    </h:outputText>
+                </p:column>
+                
+                <p:column headerText="Кол-во слов" styleClass="dict_numberOfWords_column">
+                	<h:outputText value="#{item.numberOfWords}"/>
+                </p:column>
+                                
+                <p:column headerText="Кол-во слов со звуком" styleClass="dict_numberOfWordsWithSound_column">
+                	<h:outputText value="#{item.numberOfWordsWithSound}"/>
+                </p:column>                
+                
+                <p:column styleClass="dict_action_change_column">
+                    <p:link value="Просмотр" outcome="dictionary_view">
+                        <f:param name="dictID" value="#{item.dictID}" />
+                    </p:link>
+                    
+                </p:column>   
+                
+                
+                <p:rowExpansion>
+                	<h:outputText value="Описание: "/>
+                	<h:outputText value="#{item.dictDescription}"/>
+                </p:rowExpansion>                    
+                
+            </p:dataTable>    
+        </h:form> 
+
+		<p:spacer width="30"/>
+		
+
+    </h:body>
+</html>
+
+
+
+

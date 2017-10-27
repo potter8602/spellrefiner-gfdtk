@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<datasources xmlns="http://www.jboss.org/ironjacamar/schema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.jboss.org/ironjacamar/schema http://docs.jboss.org/ironjacamar/schema/datasources_1_0.xsd">
+        
+                <datasource jndi-name="java:jboss/datasources/spellrefiner" enabled="true" use-java-context="true" pool-name="spellrefiner" use-ccm="true">
+                    <connection-url>jdbc:mysql://localhost:3306/spellRefiner?useUnicode=yes&amp;characterEncoding=UTF-8</connection-url>
+                    <driver>mysql</driver>
+                    <security>
+                      <user-name>root</user-name>
+                      <password>1</password>
+                    </security>
+                </datasource>
+                
+                <drivers>
+                    <driver name="mysql" module="com.mysql.jdbc">
+                        <xa-datasource-class>com.mysql.jdbc.jdbc2.optional.MysqlXADataSource</xa-datasource-class>
+                    </driver>
+                </drivers>
+</datasources>
+ 
+
+ 

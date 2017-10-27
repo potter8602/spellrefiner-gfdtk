@@ -1,0 +1,171 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>Checks</title>
+    </h:head>
+    <h:body rendered="#{currentUser.user.userAdmin}">        
+        
+        <ui:include src="/WEB-INF/menu.xhtml" />
+        <ui:include src="/WEB-INF/form_current_user.xhtml" /> 
+        
+        <h:form>            
+            <h:outputText value="Check"/>                                
+            <h:messages/>
+            <h:panelGrid columns="2" border="1">                              
+                
+                <h:outputText value="dictID"/>                                
+                <h:inputText value="#{controller_check.check.dictID}"></h:inputText>                                               
+
+                <h:outputText value="userID"/>                                
+                <h:inputText value="#{controller_check.check.userID}"></h:inputText>                                                               
+
+                <h:outputText value="checkName"/>                                
+                <h:inputText value="#{controller_check.check.checkName}"></h:inputText>                                                               
+
+                <h:outputText value="checkDateTime dd.MM.yyyy h:mm:ss"/>                   
+                <h:inputText value="#{controller_check.check.checkDateTime}">
+                    <f:convertDateTime type="both" pattern="dd.MM.yyyy h:mm:s" />
+                </h:inputText>                                                              
+                
+                
+                <h:outputText value="checkPass"/>                                
+                <h:inputText value="#{controller_check.check.checkPass}"/>
+                
+                <h:outputText value="checkDeleted"/>                                
+                <h:selectBooleanCheckbox value="#{controller_check.check.checkDeleted}" />
+                
+                
+                <h:outputText value="checkFinished"/>   
+                <h:selectBooleanCheckbox value="#{controller_check.check.checkFinished}" />
+                
+            </h:panelGrid>     
+            
+            <h:commandButton action="#{controller_check.SaveNew}" value="SaveNew"/>    
+            <h:commandButton action="#{controller_check.Update}" value="Update"/>    
+            <h:commandButton action="#{controller_check.Delete}" value="Delete"/>    
+        </h:form>    
+        
+        
+        <h:form> 
+            <h:outputText value="Checks list"/>                                
+            <h:commandButton action="#{controller_table_checks.UpdateList}" value="UpdateList"/>                
+        </h:form>    
+        
+        <h:form>             
+            <h:dataTable value="#{controller_table_checks.list_Check}" var="item" border="1">                        
+
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="checkID"/>                                                        
+                    </f:facet>
+                    <h:outputText value="#{item.checkID}"/>                                    
+                </h:column>
+                
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="dictID"/>                                                        
+                    </f:facet>
+                    <h:inputText value="#{item.dictID}"/>                
+                </h:column>
+                
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="dictName"/>                                                        
+                    </f:facet>
+                    <h:outputText value="#{item.checkDict.dictName}"/>                
+                </h:column>
+                
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="userID"/> 
+                    </f:facet>  
+                    
+                    <h:inputText value="#{item.userID}"/>                
+                </h:column>
+                
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="userLogin"/>                                                        
+                    </f:facet>
+                    <h:outputText value="#{item.checkUser.userLogin}"/>                
+                </h:column>
+                
+
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="checkName"/> 
+                    </f:facet>  
+                    
+                    <h:inputText value="#{item.checkName}"/>                
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="checkDateTime"/> 
+                    </f:facet>  
+                    
+                    <h:inputText value="#{item.checkDateTime}">
+                        <f:convertDateTime type="both" pattern="dd.MM.yyyy h:mm:s" />    
+                    </h:inputText>
+                </h:column>
+                
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="checkPass"/> 
+                    </f:facet>  
+                    
+                    <h:inputText value="#{item.checkPass}"/>                
+                </h:column>
+                
+                
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="checkDeleted"/> 
+                    </f:facet>  
+                    
+                    <h:selectBooleanCheckbox value="#{item.checkDeleted}" />
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="checkFinished"/> 
+                    </f:facet>  
+                    
+                    <h:selectBooleanCheckbox value="#{item.checkFinished}" />
+                </h:column>
+                
+
+                
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value=""/>
+                    </f:facet>
+                    
+                    <h:commandButton value="Delete" action="#{controller_table_checks.Delete}">
+                        <f:setPropertyActionListener target="#{controller_table_checks.check}" value="#{item}"/>
+                    </h:commandButton>
+                </h:column>                       
+
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value=""/>
+                    </f:facet>
+                    
+                    <h:commandButton value="Update" action="#{controller_table_checks.Update}">
+                        <f:setPropertyActionListener target="#{controller_table_checks.check}" value="#{item}"/>
+                    </h:commandButton>
+                </h:column>                       
+
+                
+            </h:dataTable>    
+        </h:form> 
+
+        
+    </h:body>
+</html>
+
+

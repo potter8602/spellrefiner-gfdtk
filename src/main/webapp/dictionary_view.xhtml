@@ -1,0 +1,299 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+
+    
+    <f:metadata>
+     
+
+        <f:viewParam name="dictID" value="#{form_dictionary.dictionary}" converter="#{dictionaryConverter}" 
+            converterMessage="Unknown dictionary."
+            required="false" requiredMessage="Bad request. No dictID."/>
+
+        <f:viewParam name="dictID" value="#{form_dictionary_words.dictionary}" converter="#{dictionaryConverter}" 
+            converterMessage="Unknown dictionary."
+            required="false" requiredMessage="Bad request. No dictID"/>       
+        
+		<f:viewParam name="dictID" value="#{accessControl.dictionary}" converter="#{dictionaryConverter}"/>
+		
+		
+		<f:viewAction action="#{accessControl.Update_Access_Dictionary}" />            
+        
+        
+        <f:viewAction action="#{form_dictionary_words.UpdateList}" />
+    </f:metadata>       
+    
+    <h:head>
+        <title>Словарь</title>
+    </h:head>
+
+    <h:outputScript library="js" name="swfobject.js"></h:outputScript>
+    <h:outputScript library="js" name="flash.js"></h:outputScript>
+    <h:outputScript library="js" name="general.js"></h:outputScript>
+
+    
+   <h:outputStylesheet library="css" name="index.css"/>
+    
+    
+    <h:body onload="onload_dictionary()">        
+        
+        <ui:include src="/WEB-INF/menu.xhtml" />   
+        
+        
+		<p:spacer width="10"/>
+		
+		<p:panel collapsed="true" toggleable="true" header="Описание страницы">
+			
+			<p>
+				На данной странице можно просматривать словарь.
+				<br/>В верхней части страницы находятся реквизиты словаря: название словаря, описание словаря и признак «Общий».
+				<br/>Установленный флаг «Общий» означает, что данный словарь доступен для всех пользователей.
+				<br/>
+				<br/>Ниже на странице находится панель для сортировки и фильтра списка слов словаря.
+				<br/>В порядке сортировки можно выбрать направление сортировки «По возрастанию» или «По убыванию». Также выбрать способ сортировки «По алфавиту», «В случайном порядке», «В порядке создания».
+				<br/>По умолчанию список слов сортируется по убыванию в порядке создания слов, для того что бы видеть последние добавленные слова.
+				<br/>В фильтре слов можно отобрать список слов только со звуком, сняв флаг «Без звука» и установив флаг «Со звуком».
+				<br/>Отобрать список слов без звука, можно сняв флаг «Со звуком» и установив флаг «Без звука».
+				<br/>При установленном флаге «Только удаленные» в списке слов останутся слова удаленные из списка слов. 
+				<br/>Флаг «Только с ошибками» показывает слова, в которых (по мнению пользователей, которые использовали этот словарь в проверках) есть ошибки в написании слова, переводе, описании слова, в озвучивание слова или другие ошибки.
+				<br/>Флаг «Только с необработанными ошибками» показывает слова с ошибками, которые еще не были исправлены автором словаря.
+				<br/>В поле фильтра «Слово» можно ввести слово (или начало слова) по которому будут отобраны слова в словаре.
+				<br/>
+				<br/>В списке слов кнопкой «Проиграть» можно прослушать слово (доступно при наличии звука). 
+				<br/>
+				<br/>У слов с ошибками в словаре колонке «Ошибки» имеется стрелка, при нажатии на которую появляется список ошибок. 
+				<br/>В списке ошибок кратко указывается в каком поле слова допущена ошибка, подробный комментарий, пользователь, который указал на ошибку в словаре, дата и время добавления ошибки и флаг «Обработана».
+				<br/>Не установленный флаг «Обработана» означает неисправленную ошибку.  
+			</p>
+			
+		</p:panel>
+        
+        <p:spacer width="20"/>
+        <p:separator />
+
+        <h:form rendered="#{currentUser.authorized and accessControl.readAccess_Dictionary}">            
+            <p:messages/>
+            
+            <p:panelGrid>        
+                    <p:row>
+                        <p:column>Название словаря</p:column>
+                        <p:column>Пользователь</p:column>
+                        <p:column>Создан</p:column>
+                        <p:column>Общий</p:column>
+                    </p:row>
+                    
+                    <p:row>
+                        <p:column>
+                            <h:outputText value="#{form_dictionary.dictionary.dictName}"/>
+                        </p:column>
+                        
+                        <p:column>
+                        	<h:outputText value="#{form_dictionary.dictionary.dictUser.userName}"/>
+                        </p:column>
+                        
+                        <p:column>
+                            <h:outputText value="#{form_dictionary.dictionary.dictDateTime}">
+                                <f:convertDateTime type="both" pattern="dd.MM.yyyy HH:mm:s" />                        
+                            </h:outputText>
+                        </p:column>
+                                            
+                        <p:column>
+                        	<p:selectBooleanCheckbox value="#{form_dictionary.dictionary.dictShared}" disabled="true"/>
+                        </p:column>                    
+                    
+                    </p:row>
+                    
+                    <p:row>                    
+                        <p:column>Описание:</p:column>
+                                                
+                        <p:column colspan="8">
+                       		<!-- <p:inputTextarea value="#{form_dictionary.dictionary.dictDescription}" disabled="true" size="300" rows="2" style="width:800px"/> -->
+                       		<h:outputText  value="#{form_dictionary.dictionary.dictDescription}"/>
+                        </p:column>
+                                        
+                    </p:row>
+                    
+            </p:panelGrid>    
+            
+        </h:form>            
+        
+        
+        <p:spacer width="30"/>
+        <p:separator />
+        
+        
+        <h:form id="form_words_orders_filters" rendered="#{currentUser.authorized and accessControl.readAccess_Dictionary}">   
+ 			<p:blockUI block="form_words_orders_filters" animate="false" trigger="ascendingOrder,descendingOrder,alphabeticalOrder,randomNumberOrder,wordIDOrder,withSound,withoutSound,deletedOnly,withErrorsOnly,withNotProcessedErrorsOnly,wordSpellingFilter,UpdateList" >
+ 				Подождите...       
+            </p:blockUI>
+            <h:messages/>
+            <p:panelGrid>                
+                <p:row>                                    
+
+                    <p:column>Порядок сортировки:<p:spacer width="10"/></p:column>
+
+                    <p:column >
+                        <p:selectBooleanCheckbox id="ascendingOrder" value="#{form_dictionary_words.ascendingOrder}" itemLabel="По возрастанию">
+                            <p:ajax event="change" process="@this" update="@form form_words"/>
+                        </p:selectBooleanCheckbox>                    
+                    </p:column>
+                    
+            
+                    <p:column>
+                        <p:selectBooleanCheckbox id="descendingOrder" value="#{form_dictionary_words.descendingOrder}" itemLabel="По убыванию">
+                            <p:ajax event="change" process="@this" update="@form form_words"/>
+                        </p:selectBooleanCheckbox>
+                    </p:column>
+            
+                    <p:column>
+                        <p:selectBooleanCheckbox id="alphabeticalOrder" value="#{form_dictionary_words.alphabeticalOrder}" itemLabel="По алфавиту">                        
+                            <p:ajax event="change"  process="@this" update="@form form_words" listener="#{form_dictionary_words.ChangeWordsOrder('wordSpelling')}"/>                            
+                        </p:selectBooleanCheckbox>
+                    </p:column>
+            
+                    <p:column>
+                        <p:selectBooleanCheckbox id="randomNumberOrder" value="#{form_dictionary_words.randomNumberOrder}" itemLabel="В случайном порядке">                        
+                            <p:ajax event="change" process="@this" update="@form form_words" listener="#{form_dictionary_words.ChangeWordsOrder('wordRandomNumber')}"/>                            
+                        </p:selectBooleanCheckbox>                    
+                    </p:column>
+            
+                    <p:column>
+                        <p:selectBooleanCheckbox id="wordIDOrder"  value="#{form_dictionary_words.wordIDOrder}" itemLabel="В порядке создания">                        
+                            <p:ajax event="change"  process="@this" update="@form form_words" listener="#{form_dictionary_words.ChangeWordsOrder('wordID')}"/>                            
+                        </p:selectBooleanCheckbox>                    
+                    </p:column>
+                                    
+
+                </p:row>    
+                
+                <p:row>
+                
+                    <p:column rowspan="2">Фильтр:</p:column>
+                        
+                    <p:column>
+                        <p:selectBooleanCheckbox id="withSound" value="#{form_dictionary_words.withSound}" itemLabel="Со звуком">
+                            <p:ajax event="change" process="@this" update="@form form_words"/>
+                        </p:selectBooleanCheckbox>
+                    </p:column>    
+            
+                    <p:column>    
+                        <p:selectBooleanCheckbox id="withoutSound" value="#{form_dictionary_words.withoutSound}" itemLabel="Без звука">
+                            <p:ajax event="change" process="@this" update="@form form_words"/>
+                        </p:selectBooleanCheckbox>                    
+                    </p:column>    
+            
+                    <p:column>    
+                        <p:selectBooleanCheckbox id="deletedOnly" value="#{form_dictionary_words.deletedOnly}" itemLabel="Только удаленные">                        
+                            <p:ajax event="change" process="@this" update="@form form_words"/>                            
+                        </p:selectBooleanCheckbox>   
+                    </p:column>
+
+                    <p:column>    
+                        <p:selectBooleanCheckbox id="withErrorsOnly" value="#{form_dictionary_words.withErrorsOnly}" itemLabel="Только с ошибками">                        
+                            <p:ajax event="change" process="@this" update="@form form_words"/>                            
+                        </p:selectBooleanCheckbox>   
+                    </p:column>
+                    
+                    <p:column>    
+                        <p:selectBooleanCheckbox id="withNotProcessedErrorsOnly" value="#{form_dictionary_words.withNotProcessedErrorsOnly}" itemLabel="Только с необработанными ошибками">                        
+                            <p:ajax event="change" process="@this" update="@form form_words"/>                            
+                        </p:selectBooleanCheckbox>   
+                    </p:column>
+                    
+                </p:row>
+                
+                
+                <p:row> 
+                	<p:column>
+                		Слово   
+                	</p:column>
+                	
+                	<p:column>
+                		<p:inputText id="wordSpellingFilter" value="#{form_dictionary_words.wordSpellingFilter}" onblur="#{form_dictionary_words.UpdateList()}">
+                			<p:ajax event="change" process="@this" update="@form form_words"/>
+                		</p:inputText>
+                	</p:column>               
+                
+                </p:row>
+
+                
+                <p:row>
+                    
+                    <p:column>
+                        <p:commandLink id="UpdateList" value="Обновить список слов" action="#{form_dictionary_words.UpdateList}" update="form_words"/>                                        
+                    </p:column>
+                </p:row>    
+                
+            </p:panelGrid> 
+                
+        </h:form>                
+        
+        <p:spacer width="10"/>
+        
+        
+        <h:form id="form_words" rendered="#{currentUser.authorized and accessControl.readAccess_Dictionary}"> 
+            <p:messages/>
+            
+            <p:dataTable value="#{form_dictionary_words.list_Word}" var="itemWord" emptyMessage="" paginator="true" paginatorPosition="both" rows="30">
+                
+                
+                <p:column headerText="Слово">
+                    <h:outputText value="#{itemWord.wordSpelling}"/>                
+                </p:column>                
+                
+                <p:column headerText="Перевод">
+                    <h:outputText value="#{itemWord.wordTranslation}"/>                
+                </p:column>
+
+                <p:column headerText="Описание">
+                    <h:outputText value="#{itemWord.wordDescription}"/>                
+                </p:column>
+                
+                <p:column>
+                    <p:commandLink value="Проиграть"  onclick="javascript:audio_general_play('${itemWord.wordID}')" rendered="#{itemWord.wordHasSound}"/>                    
+                </p:column>                       
+                
+                <p:column  headerText="Ошибки">
+                    <p:rowToggler  rendered="#{itemWord.wordHasErrors}"/>
+                </p:column>     
+                
+                <p:rowExpansion>
+                        <p:dataTable id="dict_errors" class="dictError_#{itemWord.wordID}" value="#{itemWord.wordDictionaryErrors}" var="dictError">
+                            <p:column>Ошибка: <h:outputText value="#{dictError.name}" /></p:column>
+                            <p:column>Пользователь:<h:outputText value="#{dictError.dictErrorUser.userLogin}" /></p:column>
+                            <p:column>
+                                Добавлена:
+                                <h:outputText value="#{dictError.dictErrorDateTime}">
+                                    <f:convertDateTime type="both" pattern="dd.MM.yyyy HH:mm:ss" />
+                                </h:outputText>                                               
+                            </p:column>
+                            
+                            <p:column>
+                            	<p:selectBooleanCheckbox value="#{dictError.dictErrorProcessed}" itemLabel="Обработана" disabled="true"/>
+                            </p:column>
+                            
+                        </p:dataTable>
+                </p:rowExpansion>                    
+            </p:dataTable>
+        </h:form> 
+        
+        
+
+        <form id="from_player">
+            <p/>        
+            <audio id="audio_general" controls="controls"/>        
+            <p/>
+        </form>
+        
+        
+        
+    </h:body>
+</html>
+
+

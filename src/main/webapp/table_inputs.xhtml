@@ -1,0 +1,213 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    
+    <h:head>
+        <title>Inputs</title>
+    </h:head>
+    
+    <h:body rendered="#{currentUser.user.userAdmin}">        
+        
+        <ui:include src="/WEB-INF/menu.xhtml" />
+        <ui:include src="/WEB-INF/form_current_user.xhtml" /> 
+        
+        <h:form>            
+            <h:outputText value="Input"/>                                
+            <h:messages/>
+            <h:panelGrid columns="2" border="1">                              
+                
+
+                <h:outputText value="checkID"/>                                
+                <h:inputText value="#{controller_input.input.checkID}"></h:inputText>                                               
+                
+                <h:outputText value="dictID"/>                                
+                <h:inputText value="#{controller_input.input.dictID}"></h:inputText>                                               
+
+                <h:outputText value="userID"/>                                
+                <h:inputText value="#{controller_input.input.userID}"></h:inputText>                                               
+                
+                <h:outputText value="wordID"/>                                
+                <h:inputText value="#{controller_input.input.wordID}"></h:inputText>                                               
+                
+
+                <h:outputText value="passNumber"/>                                
+                <h:inputText value="#{controller_input.input.passNumber}"></h:inputText>     
+                
+                <h:outputText value="wordSpelling"/>                                
+                <h:inputText value="#{controller_input.input.wordSpelling}"></h:inputText>                                                               
+
+                <h:outputText value="wordInput"/>                                
+                <h:inputText value="#{controller_input.input.wordInput}"></h:inputText>                                                               
+
+                <h:outputText value="uncertain"/>                                
+                <h:selectBooleanCheckbox value="#{controller_input.input.uncertain}"/>
+
+                <h:outputText value="error"/>                                
+                <h:selectBooleanCheckbox value="#{controller_input.input.error}"/>
+
+                <h:outputText value="skipped"/>                                
+                <h:selectBooleanCheckbox value="#{controller_input.input.skipped}"/>
+
+                
+            </h:panelGrid>     
+            
+            <h:commandButton action="#{controller_input.SaveNew}" value="SaveNew"/>    
+        </h:form>    
+        
+        
+        <h:form> 
+            <h:outputText value="Inputs list"/>                                
+            <h:commandButton action="#{controller_table_inputs.UpdateList}" value="UpdateList"/>                
+        </h:form>    
+        
+        <h:form>             
+            <h:dataTable value="#{controller_table_inputs.list_Input}" var="item" border="1">                        
+
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="inputID"/>                                                        
+                    </f:facet>
+                    <h:outputText value="#{item.inputID}"/>                                    
+                </h:column>
+                
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="checkID"/>                                                        
+                    </f:facet>
+                    <h:inputText value="#{item.checkID}"/>                
+                </h:column>    
+                
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="checkName"/>                                                        
+                    </f:facet>
+                    <h:outputText value="#{item.inputCheck.checkName}"/>                
+                </h:column>
+                
+                
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="dictID"/>                                                        
+                    </f:facet>
+                    <h:inputText value="#{item.dictID}"/>                
+                </h:column>
+                
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="dictName"/>                                                        
+                    </f:facet>
+                    <h:outputText value="#{item.inputDict.dictName}"/>                
+                </h:column>
+                
+
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="userID"/>                                                        
+                    </f:facet>
+                    <h:inputText value="#{item.userID}"/>                
+                </h:column>
+                
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="userLogin"/>                                                        
+                    </f:facet>
+                    <h:outputText value="#{item.inputUser.userLogin}"/>                
+                </h:column>
+                
+                
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="wordID"/>                                                        
+                    </f:facet>
+                    <h:inputText value="#{item.wordID}"/>                                    
+                </h:column>
+                
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="word.wordSpelling"/>                                                        
+                    </f:facet>
+                    <h:outputText value="#{item.inputWord.wordSpelling}"/>                
+                </h:column>
+                
+                
+                
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="passNumber"/> 
+                    </f:facet>  
+                    
+                    <h:inputText value="#{item.passNumber}"/>                
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="wordSpelling"/> 
+                    </f:facet>  
+                    
+                    <h:inputText value="#{item.wordSpelling}"/>                
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="wordInput"/> 
+                    </f:facet>  
+                    
+                    <h:inputText value="#{item.wordInput}"/>                
+                </h:column>
+                
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="uncertain"/> 
+                    </f:facet>  
+                    
+                    <h:selectBooleanCheckbox value="#{item.uncertain}"/>                
+                </h:column>
+                
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="error"/> 
+                    </f:facet>  
+                    
+                    <h:selectBooleanCheckbox value="#{item.error}"/>                
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="skipped"/> 
+                    </f:facet>  
+                    
+                    <h:selectBooleanCheckbox value="#{item.skipped}"/>                
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value=""/>
+                    </f:facet>
+                    
+                    <h:commandButton value="Delete" action="#{controller_table_inputs.Delete}">
+                        <f:setPropertyActionListener target="#{controller_table_inputs.input}" value="#{item}"/>
+                    </h:commandButton>
+                </h:column>                       
+
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value=""/>
+                    </f:facet>
+                    
+                    <h:commandButton value="Update" action="#{controller_table_inputs.Update}">
+                        <f:setPropertyActionListener target="#{controller_table_inputs.input}" value="#{item}"/>
+                    </h:commandButton>
+                </h:column>                       
+
+                
+            </h:dataTable>    
+        </h:form> 
+
+        
+    </h:body>
+</html>
+
+

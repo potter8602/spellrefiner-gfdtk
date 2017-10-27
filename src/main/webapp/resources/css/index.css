@@ -1,0 +1,148 @@
+.panel-grid-input{
+                    /* outline:none; */
+                }
+                
+.data-table{
+    border-collapse:collapse;
+}
+
+.panel-grid{
+    border-collapse: collapse;
+}
+
+
+
+
+.paginator-item-current-page{
+    font-weight:bold;
+}
+
+.ui-widget, .ui-widget .ui-widget {
+    font-size: 90% !important;
+}
+
+
+.separator-section{ 
+    background-color:#777777;
+}
+
+.ui-widget-overlay {
+	filter:alpha(opacity=60);  /* works in IE 7 */
+    opacity: 0.6;
+}
+
+
+.help_title {
+	font-weight: bold;
+	font-family:sans-serif;
+	font-size: 10pt;	
+}
+
+.help_text {
+	font-family:sans-serif;
+	font-size: 10pt;
+}
+
+
+.ui-panel-titlebar{
+	font-family:sans-serif;
+	font-size: 10pt;
+	font-weight: normal;	
+}
+
+.ui-panel-content{
+	font-family:sans-serif;
+	font-size: 10pt;
+	font-weight: normal;
+	
+}
+
+
+
+.dictUser_column{
+	width:100px;
+}
+
+.dictName_column{
+	width:200px;	
+}
+
+.dictDescription_column{
+	width:10px;
+	
+}
+
+.dictDateTime_column{
+	width:100px;
+}
+
+.dictShared_column{
+	width:50px;
+}
+
+.dictWriteAccessCurrentUser_column{
+	width:80px;
+}
+
+
+.dict_numberOfWords_column{
+	width:50px;
+}
+
+.dict_numberOfWordsWithSound_column{
+	width:60px;
+}
+
+.dict_action_change_column{
+	width:80px;
+}
+
+.dict_action_delete_column{
+	width:100px;
+}
+
+
+
+
+.checkName_column{
+	width:100px;
+}
+
+.checkDateTime_column{
+	width:70px;
+}
+.checkDict_dictName_column{
+	width:100px;
+}
+.check_action_save_column{
+	width:40px;
+}
+
+.check_action_begin_column{
+	width:70px;
+}
+
+.checkPass_column{
+	width:30px;
+}
+
+.check_action_delete_column{
+	width:100px;
+}
+
+
+.check_numberOfCheckedWords_column{
+	width:50px;
+}
+
+.navigation_button{
+	background: PaleTurquoise;	 
+}
+
+.action_button{
+	background: PaleGreen !important;
+}
+
+.attention_text{
+	background-color: Wheat;
+}

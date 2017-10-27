@@ -1,0 +1,146 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>Dictionaries</title>
+    </h:head>
+    <h:body rendered="#{currentUser.user.userAdmin}">        
+        
+        <ui:include src="/WEB-INF/menu.xhtml" />
+        <ui:include src="/WEB-INF/form_current_user.xhtml" /> 
+        
+        <h:form>            
+            <h:outputText value="Dictionary"/>                                
+            <h:messages/>
+            <h:panelGrid columns="2" border="1">                              
+                
+                <h:outputText value="userID"/>                                
+                <h:inputText value="#{controller_dictionary.dictionary.userID}"></h:inputText>                                               
+                
+                <h:outputText value="dictDateTime dd.MM.yyyy HH:mm:ss"/>                                
+                <h:inputText value="#{controller_dictionary.dictionary.dictDateTime}">
+                    <f:convertDateTime type="both" pattern="dd.MM.yyyy HH:mm:ss" />
+                </h:inputText>                                               
+
+                <h:outputText value="dictName"/>                                
+                <h:inputText value="#{controller_dictionary.dictionary.dictName}"></h:inputText>                                                               
+
+                <h:outputText value="dictShared"/>   
+                <h:selectBooleanCheckbox value="#{controller_dictionary.dictionary.dictShared}" />
+
+                <h:outputText value="dictDeleted"/>   
+                <h:selectBooleanCheckbox value="#{controller_dictionary.dictionary.dictDeleted}" />
+                
+            </h:panelGrid>     
+            
+            <h:commandButton action="#{controller_dictionary.SaveNew}" value="SaveNew"/>    
+        </h:form>    
+        
+        
+        <h:form> 
+            <h:outputText value="Dictionary list"/>                                
+            <h:commandButton action="#{controller_table_dictionaries.UpdateList}" value="UpdateList"/>                
+        </h:form>    
+        
+        <h:form>             
+            <h:dataTable value="#{controller_table_dictionaries.list_Dictionary}" var="item" border="1">                        
+                
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="dictID"/>                                                        
+                    </f:facet>
+                    <h:outputText value="#{item.dictID}"/>                                    
+                </h:column>
+                
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="userID"/> 
+                    </f:facet>  
+                    
+                    <h:inputText value="#{item.userID}"/>                
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="userName"/> 
+                    </f:facet>  
+                    
+                    <h:outputText value="#{item.dictUser.userName}"/>                
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="userLogin"/> 
+                    </f:facet>  
+                    
+                    <h:outputText value="#{item.dictUser.userLogin}"/>                
+                </h:column>
+
+                
+                <h:column>
+                    <f:facet name="header">    
+                        <h:outputText value="dictDateTime"/>                                
+                    </f:facet>   
+                    <h:inputText value="#{item.dictDateTime}">
+                        <f:convertDateTime type="both" pattern="dd.MM.yyyy HH:mm:ss" />                        
+                    </h:inputText>
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">  
+                        <h:outputText value="dictName"/>                                
+                    </f:facet> 
+                    <h:inputText value="#{item.dictName}"/>                
+                </h:column>
+                
+                
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="dictShared"/> 
+                    </f:facet>  
+                    
+                    <h:selectBooleanCheckbox value="#{item.dictShared}" />
+                </h:column>                
+                
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="dictDeleted"/> 
+                    </f:facet>  
+                    
+                    <h:selectBooleanCheckbox value="#{item.dictDeleted}" />
+                </h:column>                
+                
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value=""/>
+                    </f:facet>
+                    
+                        <h:commandButton value="Delete" action="#{controller_table_dictionaries.Delete}">
+                            <f:setPropertyActionListener target="#{controller_table_dictionaries.dictionary}" value="#{item}"/>
+                        </h:commandButton>
+                </h:column>                       
+
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value=""/>
+                    </f:facet>
+                    
+                        <h:commandButton value="Update" action="#{controller_table_dictionaries.Update}">
+                            <f:setPropertyActionListener target="#{controller_table_dictionaries.dictionary}" value="#{item}"/>
+                        </h:commandButton>
+                </h:column>                       
+
+                
+            </h:dataTable>    
+        </h:form> 
+
+        
+    </h:body>
+</html>
+
+
+
+

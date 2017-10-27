@@ -1,0 +1,330 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>Words</title>
+    </h:head>
+    
+    <h:outputScript library="js" name="swfobject.js"></h:outputScript>
+    <h:outputScript library="js" name="flash.js"></h:outputScript>
+    <h:outputScript library="js" name="general.js"></h:outputScript>
+    
+    <h:body onload="onload_table_words()" rendered="#{currentUser.user.userAdmin}">        
+        
+        <ui:include src="/WEB-INF/menu.xhtml" />
+        <ui:include src="/WEB-INF/form_current_user.xhtml" /> 
+        
+        <h:form>            
+            <h:outputText value="Word"/>                                
+            <h:messages/>
+            <h:panelGrid columns="2" border="1">                              
+                
+                
+                <h:outputText value="dictID"/>                                
+                <h:inputText value="#{controller_word.word.dictID}"></h:inputText>                                               
+
+                <h:outputText value="wordSpelling"/>                                
+                <h:inputText value="#{controller_word.word.wordSpelling}"></h:inputText>                                                               
+
+                <h:outputText value="wordTranslation"/>                                
+                <h:inputText value="#{controller_word.word.wordTranslation}"></h:inputText>                                                               
+
+                <h:outputText value="wordDescription"/>                                
+                <h:inputText value="#{controller_word.word.wordDescription}"></h:inputText>                                                               
+
+                <h:outputText value="wordRandomNumber"/>                                
+                <h:inputText value="#{controller_word.word.wordRandomNumber}"></h:inputText>                                                               
+                
+                <h:outputText value="wordDeleted"/>   
+                <h:selectBooleanCheckbox value="#{controller_word.word.wordDeleted}" />
+
+                <h:outputText value="wordHasSound"/>   
+                <h:selectBooleanCheckbox value="#{controller_word.word.wordHasSound}" />
+
+                <h:outputText value="wordPostponed"/>   
+                <h:selectBooleanCheckbox value="#{controller_word.word.wordPostponed}" />
+
+                <h:outputText value="wordCount"/>                                
+                <h:inputText value="#{controller_word.word.wordCount}"></h:inputText>                                                               
+
+                <h:outputText value="wordTotalCount"/>                                
+                <h:inputText value="#{controller_word.word.wordTotalCount}"></h:inputText>                                                               
+
+                <h:outputText value="wordEditionDateTime dd.MM.yyyy HH:mm:ss"/>                                
+                <h:inputText value="#{controller_word.word.wordEditionDateTime}">
+                    <f:convertDateTime type="both" pattern="dd.MM.yyyy HH:mm:ss" />
+                </h:inputText>                                               
+                
+                
+            </h:panelGrid>     
+            
+            <h:commandButton action="#{controller_word.SaveNew}" value="SaveNew"/>    
+        </h:form>    
+        
+        <audio id="audio_general" controls="controls"/>
+        
+        <h:form> 
+            <h:outputText value="Words list"/>                                
+            <h:commandButton action="#{controller_table_words.UpdateList}" value="UpdateList"/>                
+        </h:form>    
+        
+        <h:form id="form_table_words" enctype="multipart/form-data">             
+            <h:dataTable value="#{controller_table_words.list_Word}" var="item" border="1">                        
+
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="wordID"/>                                                        
+                    </f:facet>
+                    <h:outputText value="#{item.wordID}"/>                                    
+                </h:column>
+                
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="dictID"/>                                                        
+                    </f:facet>
+                    <h:inputText value="#{item.dictID}"/>                
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="dictName"/>                                                        
+                    </f:facet>
+                    <h:outputText value="#{item.wordDict.dictName}"/>                
+                </h:column>
+                
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="wordSpelling"/> 
+                    </f:facet>  
+                    
+                    <h:inputText value="#{item.wordSpelling}"/>                
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="wordTranslation"/> 
+                    </f:facet>  
+                    
+                    <h:inputText value="#{item.wordTranslation}"/>                
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="wordDescription"/> 
+                    </f:facet>  
+                    
+                    <h:inputText value="#{item.wordDescription}"/>                
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="wordRandomNumber"/> 
+                    </f:facet>  
+                    
+                    <h:inputText value="#{item.wordRandomNumber}"/>                
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="wordCount"/> 
+                    </f:facet>  
+                    
+                    <h:inputText value="#{item.wordCount}"/>                
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="wordTotalCount"/> 
+                    </f:facet>  
+                    
+                    <h:inputText value="#{item.wordTotalCount}"/>                
+                </h:column>
+                
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="wordDeleted"/> 
+                    </f:facet>  
+                    
+                    <h:selectBooleanCheckbox value="#{item.wordDeleted}" />
+                </h:column>                
+                
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="wordHasSound"/> 
+                    </f:facet>  
+                    
+                    <h:selectBooleanCheckbox value="#{item.wordHasSound}" />
+                </h:column>                
+
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="wordPostponed"/> 
+                    </f:facet>  
+                    
+                    <h:selectBooleanCheckbox value="#{item.wordPostponed}" />
+                </h:column>                
+                
+                <h:column>
+                    <f:facet name="header">    
+                        <h:outputText value="wordEditionDateTime"/>                                
+                    </f:facet>   
+                    <h:inputText value="#{item.wordEditionDateTime}">
+                        <f:convertDateTime type="both" pattern="dd.MM.yyyy HH:mm:ss" />                        
+                    </h:inputText>
+                </h:column>
+                
+
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value=""/>
+                    </f:facet>
+                    
+                    <h:commandButton value="Update" action="#{controller_table_words.Update}">
+                        <f:setPropertyActionListener target="#{controller_table_words.word}" value="#{item}"/>
+                    </h:commandButton>
+                </h:column>                       
+
+                
+                
+
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Play1"/>
+                    </f:facet>
+                    
+                    <form >
+                        <input type="button" value="Play1" onclick="javascript:audio_general_play('${item.wordID}')" />
+                    </form>   
+                    
+                </h:column>                       
+                
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="SoundPlayer"/>
+                    </f:facet>
+                    <form >
+                        <input type="button" value="Play MP3" onclick="javascript:Player_Play_MP3('${item.wordID}')" />
+                    </form>   
+                    
+                    
+                </h:column>                       
+
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="SoundPlayer"/>
+                    </f:facet>
+                    <form >
+                        <input type="button" value="Play OGG" onclick="javascript:Player_Play_OGG('${item.wordID}')" />
+                    </form>   
+                    
+                    
+                </h:column>                       
+                
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Start Recording"/>
+                    </f:facet>
+                    
+                    <form >
+                        <input type="button" value="Start" onclick="javascript:Recorder_StartRecording('${item.wordID}')" />
+                    </form>   
+                    
+                </h:column>                       
+                
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Stop Recording"/>
+                    </f:facet>
+                    
+                    <form >
+                        <input type="button" value="Stop" onclick="javascript:Recorder_StopAndUpload()" />
+                    </form>   
+                    
+                </h:column>                       
+                
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value=""/>
+                    </f:facet>
+                    
+                    <h:commandButton value="Delete" action="#{controller_table_words.Delete}">
+                        <f:setPropertyActionListener target="#{controller_table_words.word}" value="#{item}"/>
+                    </h:commandButton>
+                </h:column>     
+                
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Download"/>
+                    </f:facet>
+                    
+                    <h:outputLink value="word_sounds?wordID=#{item.wordID}">Download</h:outputLink>
+                    
+                </h:column>                       
+                
+                
+                
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value=""/>
+                    </f:facet>
+                    
+                        <h:inputFile value="#{item.fileSound}"  validator="#{form_upload_wordSound.ValidateFile}"/>            
+                        
+                        <h:commandButton value="Загрузить" action="#{form_upload_wordSound.Upload}">                
+                            <f:setPropertyActionListener target="#{form_upload_wordSound.file}" value="#{item.fileSound}"/>
+                            <f:setPropertyActionListener target="#{form_upload_wordSound.word}" value="#{item}"/>
+                        </h:commandButton>
+                        
+                    
+                </h:column>                           
+                
+                
+                
+                
+            </h:dataTable>    
+        </h:form> 
+
+       	<div id="Flash_SoundPlayer">		
+               	<p><a href="http://www.adobe.com/go/getflashplayer">Get Adobe Flash player</a></p>
+        </div>
+
+        <p/>
+        
+       	<div id="Flash_SoundRecorder">		
+               	<p><a href="http://www.adobe.com/go/getflashplayer">Get Adobe Flash player</a></p>
+        </div>
+        
+        <p/>
+        
+        <form >
+            <input type="button" value="play MP3" onclick="javascript:Player_Play_MP3('1')" />
+        </form>   
+
+        <form >
+            <input type="button" value="play OGG 1" onclick="javascript:Player_Play_OGG('1')" />
+        </form>   
+
+        <form >
+            <input type="button" value="play OGG 11" onclick="javascript:Player_Play_OGG('11')" />
+        </form>   
+        
+        <form >
+            <input type="button" value="start" onclick="javascript:Recorder_StartRecording('11')" />
+        </form>   
+        
+        <form >
+            <input type="button" value="stop" onclick="javascript:Recorder_StopAndUpload()" />
+        </form>   
+        
+        <form >
+            <input type="button" value="GetMicrophone" onclick="javascript:Reсorder_GetMicrophone()" />
+        </form>   
+
+        
+    </h:body>
+</html>
+
+

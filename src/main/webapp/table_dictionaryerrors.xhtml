@@ -1,0 +1,217 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    
+    <h:head>
+        <title>DictionaryErrors</title>
+    </h:head>
+    
+    <h:body rendered="#{currentUser.user.userAdmin}">        
+        
+        <ui:include src="/WEB-INF/menu.xhtml" />
+        <ui:include src="/WEB-INF/form_current_user.xhtml" /> 
+        
+        <h:form>            
+            <h:outputText value="DictionaryError"/>                                
+            <h:messages/>
+            <h:panelGrid columns="2" border="1">                              
+                
+                <h:outputText value="dictID"/>                                
+                <h:inputText value="#{controller_dictionaryerror.dictionaryError.dictID}"></h:inputText>                                               
+
+                <h:outputText value="userID"/>                                
+                <h:inputText value="#{controller_dictionaryerror.dictionaryError.userID}"></h:inputText>                                               
+                
+                <h:outputText value="wordID"/>                                
+                <h:inputText value="#{controller_dictionaryerror.dictionaryError.wordID}"></h:inputText>                                               
+                
+                <h:outputText value="dictErrorDateTime dd.MM.yyyy HH:mm:ss"/>                                
+                <h:inputText value="#{controller_dictionaryerror.dictionaryError.dictErrorDateTime}">
+                    <f:convertDateTime type="both" pattern="dd.MM.yyyy HH:mm:ss" />
+                </h:inputText>                                               
+
+                <h:outputText value="dictErrorSpelling"/>                                
+                <h:selectBooleanCheckbox value="#{controller_dictionaryerror.dictionaryError.dictErrorSpelling}"/>
+
+                <h:outputText value="dictErrorTranslation"/>                                
+                <h:selectBooleanCheckbox value="#{controller_dictionaryerror.dictionaryError.dictErrorTranslation}"/>
+
+                <h:outputText value="dictErrorPronunciation"/>                                
+                <h:selectBooleanCheckbox value="#{controller_dictionaryerror.dictionaryError.dictErrorPronunciation}"/>
+
+                <h:outputText value="dictErrorDescription"/>                                
+                <h:selectBooleanCheckbox value="#{controller_dictionaryerror.dictionaryError.dictErrorDescription}"/>
+
+                <h:outputText value="dictErrorOther"/>                                
+                <h:selectBooleanCheckbox value="#{controller_dictionaryerror.dictionaryError.dictErrorOther}"/>
+
+                <h:outputText value="dictErrorComment"/>                                
+                <h:inputText value="#{controller_dictionaryerror.dictionaryError.dictErrorComment}"></h:inputText>                                                               
+
+                <h:outputText value="dictErrorProcessed"/>                                
+                <h:selectBooleanCheckbox value="#{controller_dictionaryerror.dictionaryError.dictErrorProcessed}"/>
+                
+            </h:panelGrid>     
+            
+            <h:commandButton action="#{controller_dictionaryerror.SaveNew}" value="SaveNew"/>    
+        </h:form>    
+        
+        
+        <h:form> 
+            <h:outputText value="DictionaryErrors list"/>                                
+            <h:commandButton action="#{controller_table_dictionaryerrors.UpdateList}" value="UpdateList"/>                
+        </h:form>    
+        
+        <h:form>             
+            <h:dataTable value="#{controller_table_dictionaryerrors.list_DictionaryError}" var="item" border="1">                        
+
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="dictErrorID"/>                                                        
+                    </f:facet>
+                    <h:outputText value="#{item.dictErrorID}"/>                                    
+                </h:column>
+                
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="dictID"/>                                                        
+                    </f:facet>
+                    <h:inputText value="#{item.dictID}"/>                
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="dictName"/>                                                        
+                    </f:facet>
+                    <h:outputText value="#{item.dictErrorDict.dictName}"/>                
+                </h:column>
+                
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="userID"/>                                                        
+                    </f:facet>
+                    <h:inputText value="#{item.userID}"/>                
+                </h:column>
+                
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="userLogin"/>                                                        
+                    </f:facet>
+                    <h:outputText value="#{item.dictErrorUser.userLogin}"/>                
+                </h:column>
+                
+                
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="wordID"/>                                                        
+                    </f:facet>
+                    <h:inputText value="#{item.wordID}"/>                                    
+                </h:column>
+                
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="wordSpelling"/>                                                        
+                    </f:facet>
+                    <h:outputText value="#{item.dictErrorWord.wordSpelling}"/>                
+                </h:column>
+                
+                
+                <h:column>
+                    <f:facet name="header">    
+                        <h:outputText value="dictErrorDateTime"/>                                
+                    </f:facet>   
+                    <h:inputText value="#{item.dictErrorDateTime}">
+                        <f:convertDateTime type="both" pattern="dd.MM.yyyy HH:mm:ss" />                        
+                    </h:inputText>
+                </h:column>
+                
+
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="dictErrorSpelling"/> 
+                    </f:facet>  
+                    
+                    <h:selectBooleanCheckbox value="#{item.dictErrorSpelling}"/>                
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="dictErrorTranslation"/> 
+                    </f:facet>  
+                    
+                    <h:selectBooleanCheckbox value="#{item.dictErrorTranslation}"/>                
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="dictErrorPronunciation"/> 
+                    </f:facet>  
+                    
+                    <h:selectBooleanCheckbox value="#{item.dictErrorPronunciation}"/>                
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="dictErrorDescription"/> 
+                    </f:facet>  
+                    
+                    <h:selectBooleanCheckbox value="#{item.dictErrorDescription}"/>                
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="dictErrorOther"/> 
+                    </f:facet>  
+                    
+                    <h:selectBooleanCheckbox value="#{item.dictErrorOther}"/>                
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="dictErrorComment"/> 
+                    </f:facet>  
+                    
+                    <h:inputText value="#{item.dictErrorComment}"/>                
+                </h:column>
+                
+                <h:column>
+                    <f:facet name="header">       
+                        <h:outputText value="dictErrorProcessed"/> 
+                    </f:facet>  
+                    
+                    <h:selectBooleanCheckbox value="#{item.dictErrorProcessed}"/>                
+                </h:column>
+                
+
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value=""/>
+                    </f:facet>
+                    
+                    <h:commandButton value="Delete" action="#{controller_table_dictionaryerrors.Delete}">
+                        <f:setPropertyActionListener target="#{controller_table_dictionaryerrors.dictionaryError}" value="#{item}"/>
+                    </h:commandButton>
+                </h:column>                       
+
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value=""/>
+                    </f:facet>
+                    
+                    <h:commandButton value="Update" action="#{controller_table_dictionaryerrors.Update}">
+                        <f:setPropertyActionListener target="#{controller_table_dictionaryerrors.dictionaryError}" value="#{item}"/>
+                    </h:commandButton>
+                </h:column>                       
+
+                
+            </h:dataTable>    
+        </h:form> 
+
+        
+    </h:body>
+</html>
+
+

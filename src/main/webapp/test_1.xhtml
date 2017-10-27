@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Test 1</title>
+    </h:head>
+    
+    
+    <h:outputScript library="js" name="general.js"></h:outputScript>
+    
+    <h:outputStylesheet library="css" name="index.css"/>
+    
+    
+    
+    <h:body rendered="#{currentUser.user.userAdmin}">
+
+	    <ui:include src="/WEB-INF/menu.xhtml" />
+	    
+	    <h:form rendered="true">
+	    	<h:commandButton action="#{form_test.Test1}" value="Test1"/>
+	    	<h:commandButton action="#{form_test.Test2}" value="Test2"/>
+	    	<h:commandButton action="#{form_test.Test3}" value="Test3"/>
+	    	<p/>
+	    	<h:commandButton action="#{form_test.Test_ReadAccess(1,1)}" value="Test_ReadAccess(1,1)"/>
+	    	<p/>
+	    	<h:commandButton action="#{form_test.Test_ReadAccess(2,1)}" value="Test_ReadAccess(2,1)"/>
+	    	<p/>
+	    	<h:commandButton action="#{form_test.Test_ReadAccess(4,1)}" value="Test_ReadAccess(4,1)"/>
+	    	<p/>
+	    	<h:commandButton action="#{form_test.Test_ReadAccess(1,14)}" value="Test_ReadAccess(1,14)"/>
+	    	<p/>
+	    	<h:commandButton action="#{form_test.Test_ReadAccess(3,14)}" value="Test_ReadAccess(3,14)"/>
+	    	<p/>
+	    	<h:commandButton action="#{form_test.Test_ReadAccess(4,14)}" value="Test_ReadAccess(4,14)"/>
+	    	
+	    	<p/>
+	    	<p/>
+	    	<h:commandButton action="#{form_test.Test_WriteAccess(1,1)}" value="Test_WriteAccess(1,1)"/>
+	    	<p/>
+
+	    	<h:commandButton action="#{form_test.Test_WriteAccess(4,1)}" value="Test_WriteAccess(4,1)"/>
+	    	<p/>
+	    	
+	    </h:form>
+        
+        
+        <h:form id="words_with_details"   rendered="false"> 
+            
+            <p:themeSwitcher id="basic" style="width:165px">
+                <f:selectItem itemLabel="Choose Theme" itemValue="" />
+                <f:selectItems value="#{controller_test.themes}" var="item" itemLabel="#{item}" itemValue="#{item}"/>
+
+            </p:themeSwitcher> 
+            
+            
+            
+            <p:dataTable value="#{controller_test.list_Word}" var="item" paginator="true" rows="15">
+                <p:column>
+                    <p:panelGrid columns="7"  class="item_#{item.wordID}">
+                        <h:outputText value="#{item.wordID}"/>
+                        <p:inputText value="#{item.dictID}"/>
+                        <h:outputText value="#{item.wordDict.dictName}"/>
+                        <h:outputText value="#{item.wordSpelling}"/>
+                        <h:outputText value="#{item.wordHasNotProcessedErrors}"/>
+                            
+                        <h:panelGroup rendered="#{item.wordHasNotProcessedErrors}">
+                            <a onclick="test_words_show_errors(&quot;dictError_#{item.wordID}&quot;);">Показать ошибки</a>          
+                        </h:panelGroup>
+                        
+                        <p:commandButton action="#{controller_test.Update_CurrentWord_DictionaryErrors}" value="Обновить список ошибок">  
+                            <f:ajax render="details1" execute="@this">
+                                <f:setPropertyActionListener target="#{controller_test.currentWord}" value="#{item}"/>                            
+                            </f:ajax>    
+                        </p:commandButton>
+                        
+                    </p:panelGrid>
+                
+                    <p:dataTable id="details1" class="dictError_#{item.wordID}" value="#{item.wordDictionaryErrors}" var="dictError" style="display: none;">
+                        <p:column><h:outputText value="#{dictError.dictErrorID}" /></p:column>
+                        <p:column><h:outputText value="#{dictError.dictErrorComment}"/></p:column>
+                        <p:column><h:outputText value="#{dictError.dictErrorProcessed}"/></p:column>
+                    </p:dataTable>
+                </p:column>
+            </p:dataTable>
+        </h:form> 
+        
+		<h:panelGroup  rendered="false">
+            <p:link value="check 1000" outcome="check"   rendered="false">
+                <f:param name="checkID" value="1000" />
+            </p:link>
+        
+            <p/>
+
+            <p:link value="check 10" outcome="check"   rendered="false">
+                <f:param name="checkID" value="10" />
+            </p:link>
+        </h:panelGroup>
+        
+    </h:body>    
+    
+</html>
+
+
+

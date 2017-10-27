@@ -1,0 +1,326 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <f:metadata>
+        <f:viewParam name="dictID" value="#{form_dictionary_recordSound.dictionary}" converter="#{dictionaryConverter}" 
+            converterMessage="Unknown dictionary."
+            required="false" requiredMessage="Bad request. No dictID."/>
+            
+		<f:viewParam name="dictID" value="#{accessControl.dictionary}" converter="#{dictionaryConverter}"/>
+		
+		
+		<f:viewAction action="#{accessControl.Update_Access_Dictionary}" />            
+
+        <f:viewAction action="#{form_dictionary_recordSound.Update_List_Word}" />
+        <f:viewAction action="#{form_dictionary_recordSound.GetLastWord}" />
+        
+    </f:metadata>       
+    
+    <h:head>
+        <title>Озвучивание словаря</title>
+    </h:head>
+    
+    <h:outputScript library="js" name="swfobject.js"></h:outputScript>
+    <h:outputScript library="js" name="flash.js"></h:outputScript>
+    <h:outputScript library="js" name="general.js"></h:outputScript>
+    
+    
+   <h:outputStylesheet library="css" name="index.css"/>
+    
+   
+    <h:body onload="onload_dictionary_recordsound()">                    
+        
+        <ui:include src="/WEB-INF/menu.xhtml" />   
+        
+        
+		<p:spacer width="10"/>
+		
+		<p:panel collapsed="true" toggleable="true" header="Описание страницы">
+			
+			<p>
+			
+				<br/>На данной странице можно озвучить слова словаря.
+				<br/>
+				<br/>В верхней части страницы находится поле (область) программы «Adobe Flash Player». Для возможности записи звука в браузере должен быть установлен и включен плагин «Adobe Flash Player». В окне «Adobe Flash Player» следует разрешить использование микрофона. Для записи звука также требуется наличие подключенного микрофона. 
+				<br/>
+				<br/>Ниже находится форма для записи звука. В ней выводится последнее слово словаря, которое не имеет звука (в порядке, указанном в разделе «Порядок сортировки»).
+				<br/>В порядке сортировки можно выбрать направление сортировки «По возрастанию» или «По убыванию». Также выбрать способ сортировки «По алфавиту», «В случайном порядке», «В порядке создания».
+				<br/>
+				<br/>В форме озвучивания слова можно также отредактировать поля слова (написание, перевод, описание) и записать изменения кнопкой «Сохранить».
+				<br/>
+				<br/>Начать запись звука можно кнопкой «Начать запись звука». Для завершения записи следует нажать на «Остановить запись». После остановки записи в наушниках будет повторено слово для контроля работы микрофона. Проверить качество записи звука можно кнопкой «Проиграть».
+				<br/>Кнопкой «Следующее слово» можно перейти к следующему слову без звука.
+				<br/>
+				<br/>Кнопкой «Стереть звук» можно стереть записанный звук.
+				<br/>Кнопкой «Отложить озвучивание» можно отложить запись звука данного слова (это слово будет предложено озвучить, когда записан звук для всех остальных слов).
+				<br/>Кнопкой «Удалить» можно удалить слово из словаря.
+				<br/>Кнопкой «Отменить удаление» отменяется действие по удалению слова.
+				<br/>
+				<br/>Ниже на странице располагается список последних измененных слов. В этом списке доступны те же действия со словами из списка, что и в форме для озвучивания слова.
+			</p>
+			
+		</p:panel>
+        
+        <p:separator />
+
+        
+        <h:form rendered="#{currentUser.authorized and accessControl.writeAccess_Dictionary}">            
+            <p:messages/>                        
+            
+            <p:panelGrid>        
+                    <p:row>
+                        <p:column>Название словаря</p:column>
+                        <p:column>Пользователь</p:column>
+                        <p:column>Создан</p:column>
+                        <p:column></p:column>
+                    </p:row>
+                    
+                    <p:row>
+                        <p:column>
+                            <h:outputText value="#{form_dictionary_recordSound.dictionary.dictName}"/>
+                        </p:column>
+                        <p:column><h:outputText value="#{form_dictionary_recordSound.dictionary.dictUser.userName}"/></p:column>
+                        <p:column>
+                            <h:outputText value="#{form_dictionary_recordSound.dictionary.dictDateTime}">
+                                <f:convertDateTime type="both" pattern="dd.MM.yyyy HH:mm:s" />                        
+                            </h:outputText>
+                        </p:column>    
+                        
+                        <p:column>
+		                    <p:link value="Вернуться в словарь" outcome="dictionary" >
+        		                <f:param name="dictID" value="#{form_dictionary_recordSound.dictionary.dictID}" />
+                		    </p:link>                        
+                        </p:column>         
+                                        
+                    </p:row>
+            </p:panelGrid>
+        </h:form>                
+            
+        <p:separator />            
+
+        
+        
+        <p:spacer height="20"/>
+        
+        <form id="form_recorder">
+            <div id="Flash_SoundRecorder">		
+                <p><a href="http://www.adobe.com/go/getflashplayer">Get Adobe Flash player</a></p>
+            </div>
+        </form>
+        
+        
+
+
+
+
+
+        <h:form id="form_word_recordsound_orders_filters" rendered="#{currentUser.authorized and accessControl.writeAccess_Dictionary}">
+        
+	        <p:spacer width="30"/>      
+    	    <p:separator/>
+           
+            <h:messages/>
+            <p:panelGrid>                
+                <p:row>                                    
+
+                    <p:column>Порядок сортировки:<p:spacer width="10"/></p:column>
+
+                    <p:column >
+                        <p:selectBooleanCheckbox  value="#{form_dictionary_recordSound.ascendingOrder}" itemLabel="По возрастанию">
+                            <p:ajax event="change" process="@this" update="@form form_word_recordsound"/>
+                        </p:selectBooleanCheckbox>                    
+                    </p:column>
+                    
+            
+                    <p:column>
+                        <p:selectBooleanCheckbox value="#{form_dictionary_recordSound.descendingOrder}" itemLabel="По убыванию">
+                            <p:ajax event="change" process="@this" update="@form form_word_recordsound"/>
+                        </p:selectBooleanCheckbox>
+                    </p:column>
+            
+                    <p:column>
+                        <p:selectBooleanCheckbox value="#{form_dictionary_recordSound.alphabeticalOrder}" itemLabel="По алфавиту">                        
+                            <p:ajax event="change"  process="@this" update="@form form_word_recordsound" listener="#{form_dictionary_recordSound.ChangeWordsOrder('wordSpelling')}"/>                            
+                        </p:selectBooleanCheckbox>
+                    </p:column>
+            
+                    <p:column>
+                        <p:selectBooleanCheckbox value="#{form_dictionary_recordSound.randomNumberOrder}" itemLabel="В случайном порядке">                        
+                            <p:ajax event="change" process="@this" update="@form form_word_recordsound" listener="#{form_dictionary_recordSound.ChangeWordsOrder('wordRandomNumber')}"/>                            
+                        </p:selectBooleanCheckbox>                    
+                    </p:column>
+            
+                    <p:column>
+                        <p:selectBooleanCheckbox id="wordIDOrder"  value="#{form_dictionary_recordSound.wordIDOrder}" itemLabel="В порядке создания">                        
+                            <p:ajax event="change"  process="@this" update="@form form_word_recordsound" listener="#{form_dictionary_recordSound.ChangeWordsOrder('wordID')}"/>                            
+                        </p:selectBooleanCheckbox>                    
+                    </p:column>
+                              
+
+                </p:row>    
+                
+                
+            </p:panelGrid> 
+            
+            
+        </h:form>     
+
+
+        
+        <h:form id="form_word_recordsound" rendered="#{currentUser.authorized and accessControl.writeAccess_Dictionary}">
+        
+            <p:remoteCommand name="FormWordRecordSound_UploadSoundComplete" actionListener="#{form_dictionary_recordSound.UpdateForm}" update="@form" />
+            <p:remoteCommand name="FormWordRecordSound_UploadSoundFailed" actionListener="#{form_dictionary_recordSound.UpdateForm}" update="@form" />
+            <p:remoteCommand name="FormWordRecordSound_SetMuted" actionListener="#{form_dictionary_recordSound.SetMuted}" update="@form" />
+            <p:remoteCommand name="FormWordRecordSound_SetUnmuted" actionListener="#{form_dictionary_recordSound.SetUnmuted}" update="@form" />
+            
+            <p:messages for="form_word_recordsound"/>
+            
+            <p:panelGrid>  
+            
+                    <p:row>
+
+                    
+                        <p:column>Слово</p:column>
+                        <p:column>Перевод</p:column>
+                        <p:column>Описание</p:column>
+                        
+
+                        <p:column rowspan="2">
+                            <p:commandLink value="Сохранить" action="#{form_dictionary_recordSound.Save_Word}" update="@form form_last_words" process="@form"  disabled="#{form_dictionary_recordSound.word==null}"/>
+                        </p:column>
+                        
+                        
+                        <p:column rowspan="2">                        	
+                        	<h:outputText value="Микрофон выключен или недоступен" rendered="#{form_dictionary_recordSound.microphoneMuted}"/>
+                            <p:commandLink styleClass="command_record_sound_start" value="Начать запись звука" onclick="javascript:Recorder_StartRecording1('${form_dictionary_recordSound.word.wordID}', 'command_record_sound_start', 'command_record_sound_stop')" rendered="#{form_dictionary_recordSound.word!=null and !form_dictionary_recordSound.microphoneMuted}"/>
+                            <p:commandLink styleClass="command_record_sound_stop" style="display:none" value="Остановить запись" onclick="javascript:Recorder_StopRecording1('command_record_sound_start', 'command_record_sound_stop', 'text_upload_sound')" rendered="#{form_dictionary_recordSound.word!=null and !form_dictionary_recordSound.microphoneMuted}"/>
+                            
+                            <p:commandLink styleClass="text_upload_sound" style="display:none; text-decoration:none" value="Сохранение звука" rendered="#{form_dictionary_recordSound.word!=null and !form_dictionary_recordSound.microphoneMuted}"/>
+                            <!-- <h:outputText  styleClass="text_upload_sound" value="Сохранение звука"  style="display:none" rendered="#{form_dictionary_recordSound.word!=null and !form_dictionary_recordSound.microphoneMuted}"/> -->                            
+                        </p:column>
+                        
+		                <p:column rowspan="2">
+        		            <p:commandLink value="Проиграть"  onclick="javascript:audio_general_play('${form_dictionary_recordSound.word.wordID}')" disabled="#{!form_dictionary_recordSound.word.wordHasSound}"/>                    
+                		</p:column>  
+                        
+                        <p:column rowspan="2">
+                            <p:commandLink value="Следующее слово" action="#{form_dictionary_recordSound.GetLastWord}" update="@form" process="@form"/>                                        
+                        </p:column>                        
+                        
+                        
+                        <p:column rowspan="2" rendered="false">
+                            <p:commandLink value="Обновить" action="#{form_dictionary_recordSound.UpdateForm}" update="@form form_last_words" process="@form"/>                                        
+                        </p:column>                        
+                        
+                    </p:row>
+                
+                    <p:row>                    
+                        <p:column>
+                        	<p:inputText value="#{form_dictionary_recordSound.word.wordSpelling}" label="Слово (написание)"  rendered="#{form_dictionary_recordSound.word!=null}"/>
+                        	<h:outputText value="Нет слов для озвучивания" rendered="#{form_dictionary_recordSound.word==null}"/>
+                        </p:column>
+                        
+                        <p:column><p:inputText value="#{form_dictionary_recordSound.word.wordTranslation}"  disabled="#{form_dictionary_recordSound.word==null}"/></p:column>
+                        <p:column><p:inputText value="#{form_dictionary_recordSound.word.wordDescription}"  disabled="#{form_dictionary_recordSound.word==null}"/></p:column>
+                    </p:row>   
+                    
+                    <p:row>            
+                    
+		                <p:column>
+        		            <p:commandLink value="Стереть звук"  action="#{form_dictionary_recordSound.EraseSound_Word}" update="@form form_last_words" process="@form" disabled="#{!form_dictionary_recordSound.word.wordHasSound}" />           
+                		</p:column>  
+                                
+                        <p:column>
+                            <p:commandLink value="Отложить озвучивание" action="#{form_dictionary_recordSound.Postpone_Word}" update="@form form_last_words" process="@form"  disabled="#{form_dictionary_recordSound.word==null}"/>
+                        </p:column>                        
+                        
+                        <p:column>
+                            <p:commandLink value="Удалить слово" action="#{form_dictionary_recordSound.MarkDeleted_Word}" update="@form form_last_words" process="@form"  rendered="#{!form_dictionary_recordSound.word.wordDeleted}" disabled="#{form_dictionary_recordSound.word==null}"/>
+                            <p:commandLink value="Отменить удаление" action="#{form_dictionary_recordSound.UnMarkDeleted_Word}" update="@form form_last_words" process="@form" rendered="#{form_dictionary_recordSound.word.wordDeleted}" disabled="#{form_dictionary_recordSound.word==null}"/>
+                        </p:column>     
+                                           
+                    </p:row>                 
+                                  
+
+            </p:panelGrid>     
+        
+        </h:form>
+        
+        <h:form id="form_last_words" rendered="#{currentUser.authorized and accessControl.writeAccess_Dictionary}">    
+            <p:separator />        
+        	
+        
+            <p:spacer height="70"/>
+            
+            <p:panelGrid>        
+                    <p:row>
+                        <p:column>
+                            Последние измененные слова
+                        </p:column>    
+                        
+                        <p:column>
+                            <p:commandLink value="Обновить" action="#{form_dictionary_recordSound.Update_List_Word}" update="@form" process="@form"/>                                        
+                        </p:column>    
+                    </p:row>
+                    
+            </p:panelGrid> 
+            
+            <p:messages for="form_last_words"/>   
+            
+            <p:dataTable value="#{form_dictionary_recordSound.list_Word}" var="itemWord" emptyMessage="" paginator="false" rows="20">
+                
+                <p:column headerText="Слово"><p:inputText value="#{itemWord.wordSpelling}" label="Слово (написание)"/></p:column>
+                <p:column headerText="Перевод"><p:inputText value="#{itemWord.wordTranslation}"/></p:column>
+                <p:column headerText="Описание"><p:inputText value="#{itemWord.wordDescription}"/></p:column>
+                                                              
+
+                
+                <p:column headerText="Изменено">
+                    <h:outputText value="#{itemWord.wordEditionDateTime}">
+                        <f:convertDateTime type="both" pattern="dd.MM.yyyy HH:mm:s" />                        
+                    </h:outputText>
+                </p:column>       
+                
+                <p:column>
+                	<p:commandLink value="Сохранить" action="#{form_dictionary_recordSound.Save_LastWords(itemWord)}" update="@form form_word_recordsound" process="@form"/>             
+                </p:column>
+                
+                <p:column>
+                    <p:commandLink value="Проиграть"  onclick="javascript:audio_general_play('${itemWord.wordID}')" rendered="#{itemWord.wordHasSound}"/>                    
+                </p:column>  
+                
+                <p:column>
+                    <p:commandLink styleClass="command_record_sound_start" value="Записать звук" onclick="javascript:Recorder_StartRecording1('${itemWord.wordID}', 'command_record_sound_start', 'command_record_sound_stop_${itemWord.wordID}')"  rendered="#{!form_dictionary_recordSound.microphoneMuted}"/>
+                    <p:commandLink styleClass="command_record_sound_stop_${itemWord.wordID}" style="display:none" value="Остановить запись" onclick="javascript:Recorder_StopRecording1('command_record_sound_start', 'command_record_sound_stop_${itemWord.wordID}')" />
+                </p:column>                                     
+                
+                <p:column>
+                    <p:commandLink value="Стереть звук"  action="#{form_dictionary_recordSound.EraseSound_LastWords(itemWord)}" update="@form form_word_recordsound" process="@form" rendered="#{itemWord.wordHasSound}" />           
+                </p:column>  
+                
+				<p:column>
+                    <p:commandLink value="Удалить" action="#{form_dictionary_recordSound.MarkDeleted_LastWords(itemWord)}" update="@form form_word_recordsound" process="@form" rendered="#{!itemWord.wordDeleted}"/>
+                    <p:commandLink value="Отменить удаление" action="#{form_dictionary_recordSound.UnMarkDeleted_LastWords(itemWord)}" update="@form form_word_recordsound" process="@form" rendered="#{itemWord.wordDeleted}"/>                                        
+                </p:column>                       
+                                     
+                
+            </p:dataTable>
+        </h:form> 
+        
+        <form id="from_player">
+            <p/>        
+            <audio id="audio_general" controls="controls"/>        
+            <p/>        
+        </form>
+        
+        
+        
+    </h:body>
+</html>

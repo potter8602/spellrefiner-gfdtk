@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Изменение реквизитов пользователя</title>        
+    </h:head>           
+   
+    <h:outputStylesheet library="css" name="index.css"/>
+    
+    <h:body>
+        
+        <ui:include src="/WEB-INF/menu.xhtml" />  
+        
+		<p:spacer width="10"/>
+		
+		<p:panel collapsed="true" toggleable="true" header="Описание страницы">
+			
+			<p>			
+				На данной странице можно изменить реквизиты пользователя (кроме пароля).
+				<br/>Для этого нужно ввести текущий пароль, изменить (если нужно) логин, имя и e-mail пользователя и нажать на "Сохранить".
+				<br/>Новые логин и имя пользователя не должны быть пустыми, а логин не должен быть занят другим пользователем.
+			</p>
+			
+		</p:panel>
+        
+        <p:spacer width="10"/>
+        <h:form rendered="#{currentUser.authorized}">            
+            <p:messages/>        
+            
+            <p:panelGrid>        
+				<p:row>
+					<p:column colspan="2">
+                		<h:outputText value="Введите текущий пароль*"/>
+                	</p:column>
+                	
+                	<p:column>                                
+                		<p:password id="password" value="#{form_change_user.user.userPassword}" label="Пароль" redisplay="true"/>
+                	</p:column>	
+                </p:row>
+                
+                <p:row>
+					<p:column colspan="3">    
+						<p:spacer width="20"/>            		
+                	</p:column>                
+                </p:row>
+
+				<p:row>
+					<p:column>
+                	</p:column>
+                	
+                	<p:column>
+                		Текущие значения                                
+                	</p:column>
+                	
+                	<p:column>
+                		Новые значения                                
+                	</p:column>	
+                		
+                </p:row>
+                
+                <p:row>
+                	<p:column>
+                		<h:outputText value="Логин*"/>
+                	</p:column>
+                	
+                	<p:column>
+                		<h:outputText value="#{currentUser.user.userLogin}"/>
+                	</p:column>
+                	
+                	<p:column>	                                
+                		<p:inputText id="login" value="#{form_change_user.user.userLogin}" label="Логин" />
+                	</p:column>	
+                </p:row>
+
+				<p:row>
+					<p:column>
+                		<h:outputText value="Имя*"/>
+                	</p:column>
+                	
+                	<p:column>	                          
+                		<h:outputText value="#{currentUser.user.userName}"/>
+                	</p:column>
+                	
+                	<p:column>	      
+                		<p:inputText id="name" value="#{form_change_user.user.userName}"  label="Имя"/>
+                	</p:column>	
+                </p:row>                
+                
+                <p:row>
+                	<p:column>
+                		<h:outputText value="E-mail"/>
+                	</p:column>
+                	
+                	<p:column>                       
+                		<h:outputText value="#{currentUser.user.userEmail}"/>
+                	</p:column>
+                	
+                	<p:column>         
+                		<p:inputText id="email" value="#{form_change_user.user.userEmail}"  label="E-mail"/>
+                	</p:column>
+                </p:row>
+
+				<p:row>
+								
+					<p:column colspan="2">              	                                
+                	</p:column>	
+				
+					<p:column>                	                                
+                		<p:commandLink value="Сохранить" action="#{form_change_user.Save}" ajax="false"/>
+                	</p:column>	
+                </p:row>
+                
+            </p:panelGrid>    
+            
+        </h:form>           
+    </h:body>            
+</html>
+
