@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="SpellRefiner" transaction-type="JTA">
+	<!--<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>-->
+    <jta-data-source>java:jboss/datasources/spellrefiner</jta-data-source>
+    <class>SpellRefiner.Check</class>
+    <class>SpellRefiner.Dictionary</class>
+    <class>SpellRefiner.DictionaryPermission</class>
+    <class>SpellRefiner.Input</class>
+    <class>SpellRefiner.User</class>
+    <class>SpellRefiner.Word</class>
+    <class>SpellRefiner.BooleanToIntegerConverter</class>
+    <class>SpellRefiner.DictionaryError</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <properties>
+		<property name="eclipselink.logging.level" value="FINEST"/>
+		<property name="eclipselink.logging.level.sql" value="FINEST"/>
+		<property name="eclipselink.logging.parameters" value="true"/>
+		
+    </properties>
+  </persistence-unit>
+</persistence>
+
