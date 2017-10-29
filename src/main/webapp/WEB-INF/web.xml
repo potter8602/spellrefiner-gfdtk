@@ -12,14 +12,14 @@
 		 
 	<context-param>
 		<param-name>javax.faces.PROJECT_STAGE</param-name>
-		<param-value>Development</param-value>
+		<param-value>Production</param-value>
 	</context-param>
 		 
     <context-param>  
         <param-name>primefaces.THEME</param-name>  
         <param-value>bootstrap</param-value>  
     </context-param>     
-		
+		 
 	<!--	 
 	<security-constraint>
    		<web-resource-collection>
@@ -49,34 +49,6 @@
         		<transport-guarantee>CONFIDENTIAL</transport-guarantee>
     	</user-data-constraint>
 	</security-constraint>
-	-->
-	 
-	<!--
-	<security-constraint>
-    	<web-resource-collection>
-        	<web-resource-name>WEB_APPLICATION_NAME</web-resource-name>
-        		<url-pattern>
-        			/faces/login.xhtml
-        		</url-pattern>
-        
-        		<url-pattern>
-        			/faces/change_password.xhtml        	
-        		</url-pattern>
-
-		        <url-pattern>
-        			/faces/change_user.xhtml
-        		</url-pattern>
-
-		        <url-pattern>
-		        	/faces/registration.xhtml
-        		</url-pattern>
-        
-        	
-    	</web-resource-collection>
-    	<user-data-constraint>
-	    <transport-guarantee>CONFIDENTIAL</transport-guarantee>
-    	</user-data-constraint>
-	</security-constraint>	
 	-->	 
          
 </web-app>
