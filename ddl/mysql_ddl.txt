@@ -1,112 +1,119 @@
 #mysql ddl 
 
-
-#for Windows:
- 
-#create database SpellRefiner;
-
-#for Linux:
-
 #create database spellrefiner
-
 
 use spellrefiner;
 
 
-create table Users (User_ID int(10) not null auto_increment primary key) default charset= utf8;
-alter table Users add (User_Login varchar(100));
-alter table Users add (User_Name varchar(100));
-alter table Users add (User_Email varchar(100));
-alter table Users add (User_Password varchar(100));
+create table users (User_ID int(10) not null auto_increment primary key) default charset= utf8;
+alter table users add (User_Login varchar(100) not null);
+alter table users add (User_Name varchar(100));
+alter table users add (User_Email varchar(100));
+alter table users add (User_Password varchar(100));
+alter table users add (User_Admin int(1));
+alter table users add (User_Password_Encrypt varchar(200));
+alter table users add (User_Password_Salt varchar(100));
 
-alter table Users add constraint uc_User_Login unique (User_Login);
-
-
-
-
-create table Dictionaries (Dict_ID int(10) not null auto_increment primary key) default charset= utf8;
-alter table Dictionaries add (User_ID int(10));
-alter table Dictionaries add (Dict_DateTime datetime);
-alter table Dictionaries add (Dict_Name varchar(100));
-alter table Dictionaries add (Dict_Shared int(1));
-alter table Dictionaries add (Dict_Deleted int(1));
+alter table users add constraint uc_User_Login unique (User_Login);
+alter table users add index (User_ID);
+alter table users add index (User_Login);
 
 
-alter table Dictionaries add constraint uc_User_ID_Dict_Name unique (User_ID, Dict_Name);
+create table dictionaries (Dict_ID int(10) not null auto_increment primary key) default charset= utf8;
+alter table dictionaries add (User_ID int(10) not null);
+alter table dictionaries add (Dict_DateTime datetime);
+alter table dictionaries add (Dict_Name varchar(100));
+alter table dictionaries add (Dict_Shared int(1));
+alter table dictionaries add (Dict_Deleted int(1));
+alter table dictionaries add (Dict_Description varchar(300));
+
+alter table dictionaries add constraint uc_User_ID_Dict_Name unique (User_ID, Dict_Name);
+alter table dictionaries add index (Dict_ID);
+alter table dictionaries add index (User_ID);
 
 
+create table words (Word_ID  int(10) not null auto_increment primary key) default charset= utf8;
+alter table words add (Dict_ID int(10) not null);
+alter table words add (Word_Spelling  varchar(100));
+alter table words add (Word_Translation varchar(100));
+alter table words add (Word_Description varchar(100));
+alter table words add (Word_Random_Number int(10));
+alter table words add (Word_Deleted int(1));
+alter table words add (Word_HasSound int(1));
+alter table words add (Word_Sound Longblob);
+alter table words add (Word_Count int(10));
+alter table words add (Word_TotalCount int(10));
+alter table words add (Word_Edition_DateTime datetime);
+alter table words add (Word_Postponed int(1));
 
-create table Words (Word_ID  int(10) not null auto_increment primary key) default charset= utf8;
-alter table Words add (Dict_ID int(10));
-alter table Words add (Word_Spelling  varchar(100));
-alter table Words add (Word_Translation varchar(100));
-alter table Words add (Word_Description varchar(100));
-alter table Words add (Word_Random_Number int(10));
-alter table Words add (Word_Deleted int(1));
-
-alter table Words add (Word_HasSound int(1));
-alter table Words add (Word_Sound Longblob);
-
-alter table Words add (Word_Count int(10));
-alter table Words add (Word_TotalCount int(10));
-alter table Words add (Word_Edition_DateTime datetime);
-
-
-alter table Words add constraint uc_Dict_ID_Word_Spelling unique (Dict_ID, Word_Spelling);
-
-
-create table DictionaryPermissions (DictPerm_ID int(10) not null auto_increment primary key) default charset= utf8;
-alter table DictionaryPermissions add (Dict_ID int(10));
-alter table DictionaryPermissions add (User_ID int(10));
-alter table DictionaryPermissions add (DictPerm_WriteAccess int(1));
-
-alter table DictionaryPermissions add constraint uc_Dict_ID_User_ID unique (Dict_ID, User_ID);
+alter table words add constraint uc_Dict_ID_Word_Spelling unique (Dict_ID, Word_Spelling);
+alter table words add index (Word_ID);
+alter table words add index (Dict_ID);
+alter table words add index (Word_Spelling);
+alter table words add index (Word_Random_Number);
 
 
-create table Checks (Check_ID int(10) not null auto_increment primary key) default charset= utf8;
-alter table Checks add (Dict_ID int(10));
-alter table Checks add (User_ID int(10));
-alter table Checks add (Check_Name varchar(100));
-alter table Checks add (Check_DateTime datetime);
-alter table Checks add (Check_Deleted int(1));
-alter table Checks add (Check_Pass int(10));
+create table dictionarypermissions (DictPerm_ID int(10) not null auto_increment primary key) default charset= utf8;
+alter table dictionarypermissions add (Dict_ID int(10) not null);
+alter table dictionarypermissions add (User_ID int(10) not null);
+alter table dictionarypermissions add (DictPerm_WriteAccess int(1));
+
+alter table dictionarypermissions add constraint uc_Dict_ID_User_ID unique (Dict_ID, User_ID);
+alter table dictionarypermissions add index (DictPerm_ID);
+alter table dictionarypermissions add index (Dict_ID);
+alter table dictionarypermissions add index (User_ID);
 
 
+create table checks (Check_ID int(10) not null auto_increment primary key) default charset= utf8;
+alter table checks add (Dict_ID int(10) not null);
+alter table checks add (User_ID int(10) not null);
+alter table checks add (Check_Name varchar(100));
+alter table checks add (Check_DateTime datetime);
+alter table checks add (Check_Deleted int(1));
+alter table checks add (Check_Pass int(10));
+alter table checks add (Check_Finished int(1));
 
-create table Inputs (Input_ID int(10) not null auto_increment primary key) default charset= utf8;
-alter table Inputs add (Check_ID int(10));
-alter table Inputs add (Dict_ID int(10));
-alter table Inputs add (User_ID int(10));
-alter table Inputs add (Word_ID int(10));
-alter table Inputs add (Pass_Number int(10));
-alter table Inputs add (Word_Spelling  varchar(100));
-alter table Inputs add (Word_Input  varchar(100));
-alter table Inputs add (Uncertain int(1));
-alter table Inputs add (Error int(1));
-alter table Inputs add (Skipped int(1));
-
-
-
-create table DictionaryErrors (DictError_ID int(10) not null auto_increment primary key) default charset= utf8;
-alter table DictionaryErrors add (Dict_ID int(10));
-alter table DictionaryErrors add (User_ID int(10));
-alter table DictionaryErrors add (Word_ID int(10));
-alter table DictionaryErrors add (DictError_DateTime datetime);
-alter table DictionaryErrors add (DictError_Spelling int(1));
-alter table DictionaryErrors add (DictError_Translation int(1));
-alter table DictionaryErrors add (DictError_Pronunciation int(1));
-alter table DictionaryErrors add (DictError_Description int(1));
-alter table DictionaryErrors add (DictError_Other int(1));
-alter table DictionaryErrors add (DictError_Comment  varchar(100));
-alter table DictionaryErrors add (DictError_Processed int(1));
+alter table checks add index (Check_ID);
+alter table checks add index (Dict_ID);
+alter table checks add index (User_ID);
 
 
-#for Linux:
+create table inputs (Input_ID int(10) not null auto_increment primary key) default charset= utf8;
+alter table inputs add (Check_ID int(10) not null);
+alter table inputs add (Dict_ID int(10) not null);
+alter table inputs add (User_ID int(10) not null);
+alter table inputs add (Word_ID int(10) not null);
+alter table inputs add (Pass_Number int(10));
+alter table inputs add (Word_Spelling  varchar(100));
+alter table inputs add (Word_Input  varchar(100));
+alter table inputs add (Uncertain int(1));
+alter table inputs add (Error int(1));
+alter table inputs add (Skipped int(1));
 
-RENAME TABLE Users TO users;
-RENAME TABLE Dictionaries TO dictionaries;
-RENAME TABLE Words TO words;
-RENAME TABLE DictionaryPermissions TO dictionarypermissions;
-RENAME TABLE Checks TO checks;
-RENAME TABLE Inputs TO inputs;
-RENAME TABLE DictionaryErrors TO dictionaryerrors;
+alter table inputs add index (Input_ID);
+alter table inputs add index (Check_ID);
+alter table inputs add index (Dict_ID);
+alter table inputs add index (User_ID);
+alter table inputs add index (Word_ID);
+alter table inputs add index (Word_Spelling);
+
+
+create table dictionaryerrors (DictError_ID int(10) not null auto_increment primary key) default charset= utf8;
+alter table dictionaryerrors add (Dict_ID int(10) not null);
+alter table dictionaryerrors add (User_ID int(10) not null);
+alter table dictionaryerrors add (Word_ID int(10) not null);
+alter table dictionaryerrors add (DictError_DateTime datetime);
+alter table dictionaryerrors add (DictError_Spelling int(1));
+alter table dictionaryerrors add (DictError_Translation int(1));
+alter table dictionaryerrors add (DictError_Pronunciation int(1));
+alter table dictionaryerrors add (DictError_Description int(1));
+alter table dictionaryerrors add (DictError_Other int(1));
+alter table dictionaryerrors add (DictError_Comment  varchar(100));
+alter table dictionaryerrors add (DictError_Processed int(1));
+
+alter table dictionaryerrors add index (DictError_ID);
+alter table dictionaryerrors add index (Dict_ID);
+alter table dictionaryerrors add index (User_ID);
+alter table dictionaryerrors add index (Word_ID);
+
+
