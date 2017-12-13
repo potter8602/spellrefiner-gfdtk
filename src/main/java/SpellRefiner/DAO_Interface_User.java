@@ -22,4 +22,5 @@ public interface DAO_Interface_User{
     public String GetEncryptedPasswordWithSalt(String password, String salt);
     public String GetSalt();
     public String GetInitValue(String param);
+    public String GetFixedSalt();
 }

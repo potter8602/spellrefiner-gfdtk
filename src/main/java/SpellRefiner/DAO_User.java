@@ -210,7 +210,18 @@ public class DAO_User implements DAO_Interface_User{
     @Override
     public String GetEncryptedPasswordWithSalt(String password, String salt){
     	int NumberOfIteration = 10000;
-    	String fixedsalt = "8367616e6ca2f9d342e75e8437ad9c6ff55ca08";
+    	//String fixedsalt = "8367616e6ca2f9d342e75e8437ad9c6ff55ca08";
+    	String fixedsalt = GetFixedSalt();
+    	
+    	if (fixedsalt==null){
+    		return null;
+    	};
+    	
+    	if (fixedsalt.isEmpty()){
+    		return null;
+    	};
+    	
+    	
     	String password_encrypted = GetEncryptedPasswordWithSaltAndNumberOfIteration(password, salt, fixedsalt, NumberOfIteration);
     	return password_encrypted;
     	
@@ -320,6 +331,24 @@ public class DAO_User implements DAO_Interface_User{
     	
     	return null;
     }
+    
+    @Override
+    public String GetFixedSalt(){
+    	//System.out.println("GetFixedSalt---------------------");
+    	//String fixedsalt = "8367616e6ca2f9d342e75e8437ad9c6ff55ca08";
+    	
+    	//System.out.println("from web.xml spellrefiner.FIXED_SALT");
+    	//String fixedsalt = GetInitValue("spellrefiner.FIXED_SALT");
+    	//environment variable SPELLREFINER_FIXED_SALT
+    	//System.out.println("from environment variable SPELLREFINER_FIXED_SALT");
+    	String fixedsalt = System.getenv("SPELLREFINER_FIXED_SALT");
+    	
+    	//System.out.println("GetFixedSalt fixedsalt = " + fixedsalt);   	
+    	
+    	
+        return fixedsalt;
+    }
+    
     
     
 }
