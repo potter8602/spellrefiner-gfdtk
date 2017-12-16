@@ -10,7 +10,10 @@ MySQL server v. 5.7.19
 Create database in mysql.
 Use ddl script from file: spellrefiner\ddl\mysql_ddl.txt 
 
-Environment variable SPELLREFINER_FIXED_SALT is required for encrypting passwords (Set it to random string 20 bytes length, for example: SPELLREFINER_FIXED_SALT=8367616e6ca2f9d342e75e8437ad9c6ff55ca08)
+JVM settings "SPELLREFINER_FIXED_SALT" is required for encrypting passwords (Set it to random string 20 bytes length, for example: SPELLREFINER_FIXED_SALT=8367616e6ca2f9d342e75e8437ad9c6ff55ca08)
+In hosting "https://app.jelastic.regruhosting.ru" it could be done by adding text in file.
+file: /opt/shared/configuration/variables.conf 
+text: -DSPELLREFINER_FIXED_SALT=8367616e6ca2f9d342e75e8437ad9c6ff55ca08 
 
 
 Install mysql driver for Wildfly.
@@ -59,3 +62,4 @@ In <datasources> section:
                 </datasource>
 
 Change values "connection-url", "user-name", "password" 
+
