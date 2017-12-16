@@ -341,9 +341,13 @@ public class DAO_User implements DAO_Interface_User{
     	//String fixedsalt = GetInitValue("spellrefiner.FIXED_SALT");
     	//environment variable SPELLREFINER_FIXED_SALT
     	//System.out.println("from environment variable SPELLREFINER_FIXED_SALT");
-    	String fixedsalt = System.getenv("SPELLREFINER_FIXED_SALT");
+    	//String fixedsalt = System.getenv("SPELLREFINER_FIXED_SALT");
     	
-    	//System.out.println("GetFixedSalt fixedsalt = " + fixedsalt);   	
+    	
+    	//JVM property  SPELLREFINER_FIXED_SALT
+    	String fixedsalt = System.getProperty("SPELLREFINER_FIXED_SALT");    	
+    	
+    	System.out.println("GetFixedSalt fixedsalt = " + fixedsalt);   	
     	
     	
         return fixedsalt;
