@@ -31,6 +31,8 @@ public class Form_Test implements Serializable {
     @EJB
     private DAO_Interface_Dictionary DAO_Dictionary;
     
+    @EJB
+    private DAO_Interface_Check DAO_Check;
     
     public Form_Test(){
     }    
@@ -40,19 +42,25 @@ public class Form_Test implements Serializable {
     }
     
     public void Test1(){
-    	boolean access;
     	
-    	access = DAO_Word.CheckPermissionForWord(1, 1);
-    	System.out.println("access=" + access);
+    	   	
+    	//boolean access;
     	
-    	access = DAO_Word.CheckPermissionForWord(1, 14);
-    	System.out.println("access=" + access);
+    	//access = DAO_Word.CheckPermissionForWord(1, 1);
+    	//System.out.println("access=" + access);
+    	
+    	//access = DAO_Word.CheckPermissionForWord(1, 14);
+    	//System.out.println("access=" + access);
 
-    	access = DAO_Word.CheckPermissionForWord(8781, 14);
-    	System.out.println("access=" + access);
+    	//access = DAO_Word.CheckPermissionForWord(8781, 14);
+    	//System.out.println("access=" + access);
     	
-    	access = DAO_Word.CheckPermissionForWord(8781, 1);
-    	System.out.println("access=" + access);
+    	//access = DAO_Word.CheckPermissionForWord(8781, 1);
+    	//System.out.println("access=" + access);
+    	
+    	//User u = new User();
+    	//List<Check> List_Check = DAO_Check.MyChecks(u, false, true);
+    	//List<Check> List_Check = DAO_Check.MyChecks(null, false, true);
     	
     }    
 

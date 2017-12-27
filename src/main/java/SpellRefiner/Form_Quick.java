@@ -89,6 +89,13 @@ public class Form_Quick implements Serializable  {
     }
     
     public void Update_MyChecksExists(){
+
+    	my_checks_exists = false;
+    	
+        if (!currentUser.getAuthorized()){
+        	return;
+        }
+    	
     	List<Check> List_Check = DAO_Check.MyChecks(currentUser.getUser(), false, true);
     	my_checks_exists = !List_Check.isEmpty();
     	//System.out.println("Form_Quick.Update_MyChecksExists " + my_checks_exists);
