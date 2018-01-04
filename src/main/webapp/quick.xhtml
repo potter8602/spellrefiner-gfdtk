@@ -274,8 +274,11 @@
         	<p:remoteCommand name="form_input_goto_next_word" actionListener="#{form_input.GotoNextWord}" update="@form form_messages form_input_check form_input"  rendered="#{!(form_input.word==null or form_input.input.inputID==null or form_input.numberOfWordsForInput==form_input.numberOfInputWordsInCurrentPass)}"/>
         	<p:remoteCommand name="form_input_goto_next_word" update="@form form_messages form_input_check form_input"  rendered="#{(form_input.word==null or form_input.input.inputID==null or form_input.numberOfWordsForInput==form_input.numberOfInputWordsInCurrentPass)}"/>        	
         	
-        	<p:remoteCommand name="form_input_play" onstart="javascript:audio_general_play('${form_input.word.wordID}');" update="@form form_messages form_input_check form_input"/>
         	
+        	<!-- 
+        	<p:remoteCommand name="form_input_play" onstart="javascript:audio_general_play('${form_input.word.wordID}');" update="@form form_messages form_input_check form_input"/>
+        	 -->
+        	 
         	<p:remoteCommand name="form_input_set_focus" onstart="javascript:set_focus('form_input:wordInput');"/>
         	
         	<p:remoteCommand name="form_input_set_uncertain" actionListener="#{form_input.SetUncertain}" update="@form" />
@@ -315,11 +318,11 @@
                         <p:column>Не уверен</p:column>
                         
                         <p:column rowspan="2">
-                            <p:commandLink value="Сохранить" action="#{form_input.Save}" update="@form form_messages form_input_check" process="@form"  disabled="#{form_input.word==null}" title="ALT+L"/>
+                            <p:commandLink value="Сохранить" action="#{form_input.Save}" update="@form form_messages form_input_check" process="@form"  disabled="#{form_input.word==null}" title="ALT+K"/>
                         </p:column>
 
                         <p:column rowspan="2">
-                            <p:commandLink value="Следующее слово" actionListener="#{form_input.GotoNextWord}" update="@form form_messages form_input_check form_input" process="@form" disabled="#{form_input.word==null or form_input.input.inputID==null or form_input.numberOfWordsForInput==form_input.numberOfInputWordsInCurrentPass}" title="ALT+M, ALT+'">
+                            <p:commandLink value="Следующее слово" actionListener="#{form_input.GotoNextWord}" update="@form form_messages form_input_check form_input" process="@form" disabled="#{form_input.word==null or form_input.input.inputID==null or form_input.numberOfWordsForInput==form_input.numberOfInputWordsInCurrentPass}" title="ALT+L">
                             </p:commandLink>    
                         </p:column>
 
@@ -337,7 +340,7 @@
                         
                         
                     
-                        <p:column><p:inputText id="wordInput" value="#{form_input.input.wordInput}" disabled="#{form_input.word==null}"  title="ALT+K"/></p:column>
+                        <p:column><p:inputText id="wordInput" value="#{form_input.input.wordInput}" disabled="#{form_input.word==null}"  title="ALT+M" autocomplete="off"/></p:column>
                         <p:column>
                         	<p:selectBooleanCheckbox id="form_input_uncertain" value="#{form_input.input.uncertain}" disabled="#{form_input.word==null}">
                         	</p:selectBooleanCheckbox>
@@ -439,12 +442,21 @@
 		<p:panel collapsed="false" toggleable="true" header="Описание страницы" rendered="#{form_quick.state=='input'}">
 			
 				<br/>Горячие клавиши:
+				<!-- 
 				<br/>ALT+J - Проиграть слово
 				<br/>ALT+K - Поместить курсор в поле ввода слова
 				<br/>ALT+L - Сохранить
 				<br/>ALT+; (для Firefox) или ALT+M (для Chrome)- Следующее слово
 				<br/>ALT+U - Установить флаг "Не уверен"
 				<br/>ALT+I - Подсмотреть слово
+				 -->
+				 
+				<br/>ALT+K - Сохранить
+				<br/>ALT+L - Следующее слово				
+				<br/>ALT+U - Установить флаг "Не уверен"
+				<br/>ALT+M - Поместить курсор в поле ввода слова
+				<br/>ALT+I - Подсмотреть слово
+				
 				<br/>
 				<br/>				
 				<br/>В проверке вводим слова из словаря (слова из завершенных проверок не предлагаются).

@@ -322,15 +322,16 @@ function set_hotkeys(){
 		  
 		  
 		  //alt+j
-		  if(e.altKey && e.which == 74) {
-			  form_input_play();			  
+		  if(e.altKey && e.which == 74) {			  
+			  //form_input_play();			  
 			    return false;
 			  }
 		  
 		  
 		  //alt+k
-		  if(e.altKey && e.which == 75) {
-			  form_input_set_focus();
+		  if(e.altKey && e.which == 75) {			  
+			  //form_input_set_focus();
+			  form_input_save();			  
 			    return false;
 			  }
 		  
@@ -338,7 +339,8 @@ function set_hotkeys(){
 		  
 		  //alt+l
 		  if(e.altKey && e.which == 76) {	
-			  form_input_save();
+			  //form_input_save();
+			  form_input_goto_next_word();			  
 			    return false;
 			  }
 
@@ -346,7 +348,7 @@ function set_hotkeys(){
 		  //alt+;
 		  if(e.altKey && e.which == 59) {
 			  
-			  form_input_goto_next_word();
+			  //form_input_goto_next_word();
 			    return false;
 			  }
 		  
@@ -360,7 +362,8 @@ function set_hotkeys(){
 		  //alt+m		  
 		  if(e.altKey && e.which == 77) {
 			  
-			  form_input_goto_next_word();			  
+			  //form_input_goto_next_word();
+			  form_input_set_focus();
 			    return false;
 			  }
 		  
